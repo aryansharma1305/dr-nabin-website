@@ -8,7 +8,7 @@ export const profile = {
   consultationFee: "INR 1000",
   currentRoles: ["Academic Director of Medicine at Daaru Salaam University", "Attending Radiologist at EMHRC"],
   email: "drnabinkyadav@gmail.com",
-  phone: "+91-XXXXXXXXXX",
+  phone: null,
 };
 
 export const profileStats = [
@@ -131,12 +131,6 @@ export const awards = [
     icon: "health_and_safety",
   },
 ];
-
-export const certificateSlots = awards.map((award, index) => ({
-  ...award,
-  slot: `Certificate Slot ${index + 1}`,
-  image: null,
-}));
 
 export const books = [
   {

@@ -4,8 +4,8 @@ import Navbar from "../components/Navbar.jsx";
 import FloatingSocial from "../components/FloatingSocial.jsx";
 import Footer from "../components/Footer.jsx";
 import CustomCursor from "../components/CustomCursor.jsx";
-import { profile, educationHighlights, awards, certificateSlots } from "./pageContent.js";
-import { getCertificates, mergeCertificateSlots } from "../api/certificates.js";
+import { profile, educationHighlights, awards } from "./pageContent.js";
+import { getGalleryItems } from "../api/gallery-items.js";
 import { useReveal } from "./useReveal.js";
 import drNabinPhoto from "../assets/dr-nabin.jpeg";
 
@@ -76,16 +76,16 @@ const bioBlocks = [
 
 export default function About() {
   useReveal();
-  const [storedCertificates, setStoredCertificates] = useState({});
+  const [uploadedItems, setUploadedItems] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
-    getCertificates()
-      .then((certificates) => {
-        if (isMounted) setStoredCertificates(certificates);
+    getGalleryItems()
+      .then((items) => {
+        if (isMounted) setUploadedItems(items);
       })
       .catch(() => {
-        if (isMounted) setStoredCertificates({});
+        if (isMounted) setUploadedItems([]);
       });
 
     return () => {
@@ -93,7 +93,9 @@ export default function About() {
     };
   }, []);
 
-  const visibleCertificateSlots = mergeCertificateSlots(certificateSlots, storedCertificates).slice(0, 6);
+  const recognitionMedia = uploadedItems
+    .filter((item) => ["Certificate", "Award", "Achievement"].includes(item.category))
+    .slice(0, 6);
 
   return (
     <div className="bg-background text-on-background antialiased selection:bg-primary selection:text-on-primary overflow-x-hidden">
@@ -332,25 +334,24 @@ export default function About() {
           </div>
 
           <div className="max-w-6xl mx-auto">
-            {/* Only show certificate gallery when images have actually been uploaded */}
-            {visibleCertificateSlots.filter((s) => s.image).length > 0 && (
+            {recognitionMedia.length > 0 && (
               <>
                 <div className="mb-8 reveal">
-                  <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase">Certificates & Credentials</span>
+                  <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase">Recognition Media</span>
                   <div className="mt-2 h-px bg-primary/10"></div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-gutter">
-                  {visibleCertificateSlots.filter((s) => s.image).map((slot, index) => (
+                  {recognitionMedia.map((item, index) => (
                     <div
                       className="reveal min-h-[220px] sm:aspect-[4/3] rounded-2xl border border-primary/20 bg-surface-container-low/40 backdrop-blur-xl overflow-hidden hover:border-primary/60 transition-all duration-300 min-w-0"
-                      key={slot.slot}
+                      key={item.id}
                       style={{ transitionDelay: `${index * 50}ms` }}
                     >
                       <div className="relative w-full h-full min-h-[220px]">
-                        <img alt={slot.title} className="w-full h-full object-cover" src={slot.image} />
+                        <img alt={item.title} className="w-full h-full object-cover" src={item.image} />
                         <div className="absolute inset-x-0 bottom-0 bg-background/85 backdrop-blur-md p-4 text-left">
-                          <p className="font-label-caps text-label-caps text-on-surface break-words">{slot.title}</p>
-                          <p className="font-mono-technical text-mono-technical text-on-surface-variant mt-1">{slot.issuer}</p>
+                          <p className="font-label-caps text-label-caps text-primary tracking-widest uppercase">{item.category}</p>
+                          <p className="font-body-md text-body-md text-on-surface break-words mt-1">{item.title}</p>
                         </div>
                       </div>
                     </div>

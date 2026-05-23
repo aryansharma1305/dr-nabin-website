@@ -1,16 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { getConsultations, deleteConsultation } from "../api/book-consultation.js";
 import { getMessages, markMessageRead, deleteMessage } from "../api/contact.js";
-import {
-  deleteCertificate,
-  getCertificates,
-  mergeCertificateSlots,
-  saveCertificate,
-  uploadCertificateToCloudinary,
-} from "../api/certificates.js";
-import { certificateSlots } from "./pageContent.js";
+import { createGalleryItem, deleteGalleryItem, getGalleryItems } from "../api/gallery-items.js";
 
 const ADMIN_PASSWORD = "dryadav2024";
+const MEDIA_CATEGORIES = ["Certificate", "Award", "Achievement", "Event", "Gallery", "Book", "Teaching", "Research"];
 
 function formatDate(iso) {
   if (!iso) return "—";
@@ -65,9 +59,12 @@ export default function Admin() {
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
-  const [certificates, setCertificates] = useState({});
-  const [certificateStatus, setCertificateStatus] = useState("");
-  const [certificateError, setCertificateError] = useState("");
+  const [galleryItems, setGalleryItems] = useState([]);
+  const [mediaForm, setMediaForm] = useState({ title: "", category: "Certificate", description: "" });
+  const [mediaFile, setMediaFile] = useState(null);
+  const [mediaStatus, setMediaStatus] = useState("");
+  const [mediaError, setMediaError] = useState("");
+  const [mediaUploading, setMediaUploading] = useState(false);
 
   const refreshData = useCallback(async () => {
     setLoading(true);
@@ -90,10 +87,10 @@ export default function Admin() {
   useEffect(() => {
     if (!isAuthed) return;
 
-    getCertificates()
-      .then(setCertificates)
+    getGalleryItems()
+      .then(setGalleryItems)
       .catch((err) => {
-        setCertificateError(err.message || "Failed to load certificates.");
+        setMediaError(err.message || "Failed to load gallery items.");
       });
   }, [isAuthed]);
 
@@ -141,58 +138,55 @@ export default function Admin() {
     setSelectedItem({ ...msg, type: "contact" });
   }
 
-  async function handleCertificateUpload(slot, file) {
-    if (!file) return;
+  async function handleMediaUpload(event) {
+    event.preventDefault();
 
-    setCertificateError("");
-    setCertificateStatus(`Processing ${slot.title}...`);
+    if (!mediaFile) {
+      setMediaError("Choose an image before uploading.");
+      return;
+    }
+    if (!mediaForm.title.trim()) {
+      setMediaError("Add a title for this image.");
+      return;
+    }
+
+    setMediaUploading(true);
+    setMediaError("");
+    setMediaStatus(`Uploading ${mediaForm.title || "media"}...`);
 
     try {
-      const uploaded = await uploadCertificateToCloudinary(file);
-      await saveCertificate({
-        slot: slot.slot,
-        title: slot.title,
-        issuer: slot.issuer,
-        imageUrl: uploaded.imageUrl,
-        publicId: uploaded.publicId,
+      const item = await createGalleryItem({
+        title: mediaForm.title.trim(),
+        category: mediaForm.category,
+        description: mediaForm.description.trim(),
+        file: mediaFile,
       });
-
-      const nextCertificates = {
-        ...certificates,
-        [slot.slot]: {
-          slot: slot.slot,
-          title: slot.title,
-          issuer: slot.issuer,
-          image: uploaded.imageUrl,
-          publicId: uploaded.publicId,
-          uploadedAt: new Date().toISOString(),
-        },
-      };
-      setCertificates(nextCertificates);
-      setCertificateStatus(`${slot.title} uploaded to Cloudinary.`);
+      setGalleryItems((prev) => [item, ...prev]);
+      setMediaForm({ title: "", category: "Certificate", description: "" });
+      setMediaFile(null);
+      setMediaStatus(`${item.title} uploaded to Cloudinary.`);
     } catch (err) {
-      setCertificateError(err.message || "Could not upload this certificate.");
-      setCertificateStatus("");
+      setMediaError(err.message || "Could not upload this item.");
+      setMediaStatus("");
+    } finally {
+      setMediaUploading(false);
     }
   }
 
-  async function handleCertificateRemove(slot) {
+  async function handleMediaRemove(item) {
     try {
-      await deleteCertificate(slot.slot);
-      const nextCertificates = { ...certificates };
-      delete nextCertificates[slot.slot];
-      setCertificates(nextCertificates);
-      setCertificateStatus(`${slot.title} removed from the website.`);
-      setCertificateError("");
+      await deleteGalleryItem(item.id);
+      setGalleryItems((prev) => prev.filter((media) => media.id !== item.id));
+      setMediaStatus(`${item.title} removed from the website.`);
+      setMediaError("");
     } catch (err) {
-      setCertificateError(err.message || "Could not remove this certificate.");
-      setCertificateStatus("");
+      setMediaError(err.message || "Could not remove this item.");
+      setMediaStatus("");
     }
   }
 
   const unreadCount = messages.filter((m) => !m.read).length;
-  const mergedCertificateSlots = mergeCertificateSlots(certificateSlots, certificates);
-  const uploadedCertificateCount = Object.values(certificates).filter(Boolean).length;
+  const uploadedMediaCount = galleryItems.length;
 
   if (!isAuthed) {
     return (
@@ -312,16 +306,16 @@ export default function Admin() {
           </button>
           <button
             className={`flex items-center gap-3 px-4 py-3 rounded-xl font-label-caps text-label-caps transition-all ${
-              activeTab === "certificates" ? "bg-primary/10 text-primary border border-primary/20" : "text-on-surface-variant hover:text-primary hover:bg-surface-container-low/60"
+              activeTab === "gallery" ? "bg-primary/10 text-primary border border-primary/20" : "text-on-surface-variant hover:text-primary hover:bg-surface-container-low/60"
             }`}
-            onClick={() => { setActiveTab("certificates"); setSelectedItem(null); }}
+            onClick={() => { setActiveTab("gallery"); setSelectedItem(null); }}
             type="button"
           >
-            <span className="material-symbols-outlined text-[18px]">workspace_premium</span>
-            Certificates
-            {uploadedCertificateCount > 0 && (
+            <span className="material-symbols-outlined text-[18px]">photo_library</span>
+            Gallery
+            {uploadedMediaCount > 0 && (
               <span className="ml-auto bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full">
-                {uploadedCertificateCount}
+                {uploadedMediaCount}
               </span>
             )}
           </button>
@@ -351,15 +345,15 @@ export default function Admin() {
             )}
           </button>
           <button
-            className={`flex-1 flex flex-col items-center py-3 gap-1 font-label-caps text-label-caps transition-colors relative ${activeTab === "certificates" ? "text-primary" : "text-on-surface-variant"}`}
-            onClick={() => { setActiveTab("certificates"); setSelectedItem(null); }}
+            className={`flex-1 flex flex-col items-center py-3 gap-1 font-label-caps text-label-caps transition-colors relative ${activeTab === "gallery" ? "text-primary" : "text-on-surface-variant"}`}
+            onClick={() => { setActiveTab("gallery"); setSelectedItem(null); }}
             type="button"
           >
-            <span className="material-symbols-outlined text-[20px]">workspace_premium</span>
-            Certs
-            {uploadedCertificateCount > 0 && (
+            <span className="material-symbols-outlined text-[20px]">photo_library</span>
+            Gallery
+            {uploadedMediaCount > 0 && (
               <span className="absolute top-2 right-1/4 bg-primary text-on-primary text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                {uploadedCertificateCount}
+                {uploadedMediaCount}
               </span>
             )}
           </button>
@@ -377,7 +371,7 @@ export default function Admin() {
           )}
 
           {/* Fetch error */}
-          {!loading && fetchError && activeTab !== "certificates" && (
+          {!loading && fetchError && activeTab !== "gallery" && (
             <div className="mb-8 flex items-start gap-3 bg-error/10 border border-error/30 rounded-xl p-5">
               <span className="material-symbols-outlined text-error flex-shrink-0">error</span>
               <div>
@@ -395,7 +389,7 @@ export default function Admin() {
             </div>
           )}
 
-          {!loading && (!fetchError || activeTab === "certificates") && (
+          {!loading && (!fetchError || activeTab === "gallery") && (
             <>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
             <StatCard icon="calendar_month" label="Total Consultations" value={consultations.length} />
@@ -600,27 +594,27 @@ export default function Admin() {
             </div>
           )}
 
-          {/* Certificates Tab */}
-          {activeTab === "certificates" && (
+          {/* Gallery Tab */}
+          {activeTab === "gallery" && (
             <div className="space-y-8">
               <div className="bg-surface-container-low/40 backdrop-blur-xl border border-primary/10 rounded-2xl p-6 md:p-8">
                 <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
                   <div>
-                    <h2 className="font-headline-lg text-headline-lg text-on-surface mb-3">Certificate Uploads</h2>
+                    <h2 className="font-headline-lg text-headline-lg text-on-surface mb-3">Gallery Media</h2>
                     <p className="font-body-md text-body-md text-on-surface-variant max-w-3xl">
-                      Upload certificate images to Cloudinary here. They will appear automatically in the About page certificate slots and in the Gallery page.
+                      Add any client-approved image here: certificates, awards, events, teaching photos, research moments, or book visuals. Each item keeps its own title and category.
                     </p>
                   </div>
-                  <Badge color="primary">{uploadedCertificateCount} of {certificateSlots.length} uploaded</Badge>
+                  <Badge color="primary">{uploadedMediaCount} uploaded</Badge>
                 </div>
 
-                {(certificateStatus || certificateError) && (
+                {(mediaStatus || mediaError) && (
                   <div className={`mt-6 rounded-xl border p-4 font-mono-technical text-mono-technical ${
-                    certificateError
+                    mediaError
                       ? "border-error/30 bg-error/10 text-error"
                       : "border-primary/20 bg-primary/10 text-primary"
                   }`}>
-                    {certificateError || certificateStatus}
+                    {mediaError || mediaStatus}
                   </div>
                 )}
 
@@ -629,60 +623,95 @@ export default function Admin() {
                 </div>
               </div>
 
+              <form className="bg-surface-container-low/50 backdrop-blur-xl border border-primary/10 rounded-2xl p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-5" onSubmit={handleMediaUpload}>
+                <div>
+                  <label className="font-label-caps text-label-caps text-primary block mb-2">Title</label>
+                  <input
+                    className="w-full bg-surface-container-low border border-primary/20 rounded-xl px-4 py-3 text-on-surface font-body-md focus:outline-none focus:border-primary"
+                    onChange={(event) => setMediaForm((prev) => ({ ...prev, title: event.target.value }))}
+                    placeholder="Example: Gold Medal Ceremony"
+                    required
+                    type="text"
+                    value={mediaForm.title}
+                  />
+                </div>
+                <div>
+                  <label className="font-label-caps text-label-caps text-primary block mb-2">Category</label>
+                  <select
+                    className="w-full bg-surface-container-low border border-primary/20 rounded-xl px-4 py-3 text-on-surface font-body-md focus:outline-none focus:border-primary"
+                    onChange={(event) => setMediaForm((prev) => ({ ...prev, category: event.target.value }))}
+                    value={mediaForm.category}
+                  >
+                    {MEDIA_CATEGORIES.map((category) => (
+                      <option className="bg-surface-container-high text-on-surface" key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="font-label-caps text-label-caps text-primary block mb-2">Description</label>
+                  <textarea
+                    className="w-full bg-surface-container-low border border-primary/20 rounded-xl px-4 py-3 text-on-surface font-body-md focus:outline-none focus:border-primary resize-none"
+                    onChange={(event) => setMediaForm((prev) => ({ ...prev, description: event.target.value }))}
+                    placeholder="Optional short caption for the public gallery"
+                    rows="3"
+                    value={mediaForm.description}
+                  />
+                </div>
+                <div className="md:col-span-2 flex flex-col md:flex-row gap-4 md:items-center">
+                  <input
+                    accept="image/*"
+                    className="block w-full text-on-surface-variant file:mr-4 file:rounded-full file:border-0 file:bg-primary file:px-5 file:py-3 file:font-label-caps file:text-label-caps file:text-on-primary hover:file:bg-primary-fixed"
+                    onChange={(event) => setMediaFile(event.target.files?.[0] || null)}
+                    required
+                    type="file"
+                  />
+                  <button
+                    className="inline-flex justify-center items-center gap-2 rounded-full bg-primary px-7 py-3 font-label-caps text-label-caps text-on-primary hover:bg-primary-fixed disabled:opacity-60"
+                    disabled={mediaUploading}
+                    type="submit"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">cloud_upload</span>
+                    {mediaUploading ? "Uploading" : "Add Image"}
+                  </button>
+                </div>
+              </form>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 md:gap-6">
-                {mergedCertificateSlots.map((slot, index) => (
+                {galleryItems.map((item) => (
                   <article
                     className="bg-surface-container-low/50 backdrop-blur-xl border border-primary/10 rounded-2xl overflow-hidden min-w-0"
-                    key={slot.slot}
+                    key={item.id}
                   >
                     <div className="min-h-[220px] sm:aspect-[4/3] bg-surface-container-lowest/60 flex items-center justify-center overflow-hidden">
-                      {slot.image ? (
-                        <img alt={slot.title} className="w-full h-full object-cover" src={slot.image} />
-                      ) : (
-                        <div className="text-center p-8">
-                          <span className="material-symbols-outlined text-primary text-5xl mb-4 block">add_photo_alternate</span>
-                          <p className="font-mono-technical text-mono-technical text-on-surface-variant">No image uploaded</p>
-                        </div>
-                      )}
+                      <img alt={item.title} className="w-full h-full object-cover" src={item.image} />
                     </div>
                     <div className="p-5 space-y-4">
                       <div>
-                        <p className="font-label-caps text-label-caps text-primary tracking-widest uppercase">{slot.slot}</p>
-                        <h3 className="font-body-lg text-body-lg text-on-surface mt-1 break-words">{slot.title}</h3>
-                        <p className="font-mono-technical text-mono-technical text-on-surface-variant mt-1">{slot.issuer}</p>
-                      </div>
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <input
-                          accept="image/*"
-                          className="sr-only"
-                          id={`certificate-upload-${index}`}
-                          onChange={(event) => {
-                            handleCertificateUpload(slot, event.target.files?.[0]);
-                            event.target.value = "";
-                          }}
-                          type="file"
-                        />
-                        <label
-                          className="flex-1 cursor-pointer inline-flex items-center justify-center gap-2 bg-primary text-on-primary font-label-caps text-label-caps px-4 py-3 rounded-full hover:bg-primary-fixed transition-colors"
-                          htmlFor={`certificate-upload-${index}`}
-                        >
-                          <span className="material-symbols-outlined text-[18px]">upload_file</span>
-                          {slot.image ? "Replace" : "Upload"}
-                        </label>
-                        {slot.image && (
-                          <button
-                            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 border border-error/30 text-error font-label-caps text-label-caps px-4 py-3 rounded-full hover:bg-error/10 transition-colors"
-                            onClick={() => handleCertificateRemove(slot)}
-                            type="button"
-                          >
-                            <span className="material-symbols-outlined text-[18px]">delete</span>
-                            Remove
-                          </button>
+                        <p className="font-label-caps text-label-caps text-primary tracking-widest uppercase">{item.category}</p>
+                        <h3 className="font-body-lg text-body-lg text-on-surface mt-1 break-words">{item.title}</h3>
+                        {item.description && (
+                          <p className="font-mono-technical text-mono-technical text-on-surface-variant mt-2 line-clamp-3">{item.description}</p>
                         )}
                       </div>
+                      <button
+                        className="w-full inline-flex items-center justify-center gap-2 border border-error/30 text-error font-label-caps text-label-caps px-4 py-3 rounded-full hover:bg-error/10 transition-colors"
+                        onClick={() => handleMediaRemove(item)}
+                        type="button"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                        Remove
+                      </button>
                     </div>
                   </article>
                 ))}
+                {galleryItems.length === 0 && (
+                  <div className="sm:col-span-2 xl:col-span-3 rounded-2xl border border-primary/10 bg-surface-container-low/30 p-12 text-center">
+                    <span className="material-symbols-outlined text-primary text-5xl mb-4 block">photo_library</span>
+                    <p className="font-body-md text-body-md text-on-surface-variant">No custom gallery media has been uploaded yet.</p>
+                  </div>
+                )}
               </div>
             </div>
           )}

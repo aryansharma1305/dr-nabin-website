@@ -142,13 +142,15 @@ export default function Home() {
 
       {/* ── Hero ── */}
       <main className="relative z-10 pt-32 md:pt-40 min-h-screen flex flex-col justify-center pb-32 overflow-hidden">
+        <div className="absolute left-0 top-24 h-[520px] w-[760px] max-w-full rounded-full bg-primary/10 blur-[130px] pointer-events-none"></div>
+        <div className="absolute right-0 top-40 h-[420px] w-[520px] max-w-full rounded-full bg-secondary/10 blur-[120px] pointer-events-none"></div>
         <div className="max-w-[1440px] mx-auto px-margin-mobile xl:px-32 w-full gs-reveal">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
             {/* Left column */}
             <div className="md:col-span-8 flex flex-col gap-8 md:pr-12">
               <div className="space-y-4">
                 <h1
-                  className="font-display-lg text-display-lg md:text-[140px] text-on-surface italic font-light tracking-tight gs-reveal"
+                  className="font-display-lg text-display-lg md:text-[140px] text-on-surface italic font-light tracking-tight gs-reveal drop-shadow-[0_0_28px_rgba(240,244,255,0.18)]"
                   style={{ lineHeight: 1.1 }}
                 >
                   {"Precision.".split(" ").map((word, index) => (
@@ -163,12 +165,15 @@ export default function Home() {
                     </motion.span>
                   ))}
                 </h1>
-                <h2 className="font-body-lg text-body-lg md:text-[32px] md:leading-[40px] text-gradient-gold font-light gs-reveal">
+                <h2 className="font-body-lg text-body-lg md:text-[32px] md:leading-[40px] text-gradient-gold font-medium gs-reveal drop-shadow-[0_0_18px_rgba(212,168,67,0.18)]">
                   Diagnosis. Education. Excellence.
                 </h2>
+                <p className="font-body-lg text-[22px] md:text-[28px] leading-tight text-on-surface font-semibold tracking-normal gs-reveal">
+                  {profile.name}
+                </p>
               </div>
 
-              <div className="h-8 font-mono-technical text-mono-technical text-on-surface-variant tracking-wider uppercase text-sm flex items-center gap-2 gs-reveal">
+              <div className="h-8 font-mono-technical text-mono-technical text-on-surface tracking-wider uppercase text-sm flex items-center gap-2 gs-reveal">
                 <span className="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
                 <span id="typewriter-text">{typewriterText}</span>
                 <span className="animate-pulse border-r-2 border-primary ml-1 h-5"></span>
@@ -177,7 +182,7 @@ export default function Home() {
               <div className="flex flex-wrap gap-4 mt-8 overflow-hidden py-2 gs-reveal" id="credentials-container">
                 {credentials.map((credential) => (
                   <div
-                    className="shimmer-pill px-5 py-2.5 rounded-full border border-primary/30 bg-surface-variant/40 backdrop-blur-sm font-mono-technical text-sm text-on-surface-variant flex items-center gap-2"
+                    className="shimmer-pill px-5 py-2.5 rounded-full border border-primary/40 bg-surface-container-low/70 backdrop-blur-md font-mono-technical text-sm text-on-surface flex items-center gap-2 shadow-[0_0_18px_rgba(212,168,67,0.08)]"
                     key={credential}
                   >
                     <span className="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_5px_#D4A843]"></span>
@@ -205,12 +210,17 @@ export default function Home() {
             </div>
 
             {/* Right column — portrait */}
-            <div className="md:col-span-4 mt-16 md:mt-0 relative hidden md:block gs-reveal">
-              <div className="w-full aspect-[3/4] glass-panel rounded-2xl overflow-hidden relative group float-animation border-filament">
-                <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent z-10"></div>
+            <div className="md:col-span-4 mt-12 md:mt-0 relative block gs-reveal">
+              <div className="relative max-w-[320px] md:max-w-[420px] mx-auto md:ml-auto md:mr-0">
+                <div className="absolute -inset-4 rounded-[28px] bg-gradient-to-br from-primary/25 via-secondary/10 to-transparent blur-2xl opacity-70 pointer-events-none"></div>
+                <div className="absolute -top-4 -right-4 w-24 h-24 border-t border-r border-primary/50 rounded-tr-2xl pointer-events-none"></div>
+                <div className="absolute -bottom-4 -left-4 w-24 h-24 border-b border-l border-primary/40 rounded-bl-2xl pointer-events-none"></div>
+                <div className="w-full aspect-[4/5] glass-panel rounded-2xl overflow-hidden relative group float-animation border-filament bg-surface-container-low">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_12%,rgba(212,168,67,0.16),transparent_38%)] z-10 pointer-events-none"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/10 to-transparent z-10 pointer-events-none"></div>
                 <img
                   alt="Dr. Yadav"
-                  className="w-full h-full object-contain object-top grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-out mix-blend-luminosity bg-surface-container-low"
+                    className="w-full h-full object-cover object-[center_top] saturate-[1.08] contrast-[1.03] transition-transform duration-700 ease-out group-hover:scale-[1.025]"
                   src={drNabinPhoto}
                 />
                 <div className="absolute bottom-6 left-6 right-6 z-20 glass-panel rounded-xl p-4 flex items-center gap-4 backdrop-blur-md">
@@ -221,6 +231,7 @@ export default function Home() {
                     <p className="font-label-caps text-label-caps text-primary mb-1">Current Focus</p>
                     <p className="font-mono-technical text-mono-technical text-on-surface text-xs truncate">Stereotactic Radiosurgery</p>
                   </div>
+                </div>
                 </div>
               </div>
             </div>
@@ -247,10 +258,11 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
           <div className="md:col-span-5 relative">
             <div className="absolute inset-0 m-auto w-64 h-64 border border-primary/20 rounded-full border-t-primary animate-spin-slow pointer-events-none"></div>
-            <div className="w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden border border-primary/20 relative z-10 bg-surface-container mx-auto">
+            <div className="absolute inset-0 m-auto w-56 h-56 md:w-72 md:h-72 rounded-full bg-primary/20 blur-2xl pointer-events-none"></div>
+            <div className="w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden border border-primary/30 relative z-10 bg-surface-container mx-auto shadow-[0_0_50px_rgba(212,168,67,0.16)]">
               <img
                 alt="Dr. Nabin Kumar Yadav"
-                className="w-full h-full object-contain object-top mix-blend-luminosity opacity-90 hover:opacity-100 hover:mix-blend-normal transition-all duration-700 bg-surface-container-low"
+                className="w-full h-full object-cover object-[center_top] saturate-[1.08] contrast-[1.03] transition-transform duration-700 hover:scale-[1.04] bg-surface-container-low"
                 src={drNabinPhoto}
               />
             </div>

@@ -71,4 +71,16 @@ export async function ensureTables() {
       uploaded_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS gallery_items (
+      id          BIGSERIAL PRIMARY KEY,
+      title       TEXT        NOT NULL,
+      category    TEXT        NOT NULL,
+      description TEXT,
+      image_url   TEXT        NOT NULL,
+      public_id   TEXT,
+      uploaded_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
 }

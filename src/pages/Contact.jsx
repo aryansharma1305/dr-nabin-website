@@ -65,6 +65,19 @@ export default function Contact() {
             ))}
           </div>
 
+          <div className="rounded-2xl border border-primary/10 bg-surface-container-low/60 backdrop-blur-xl p-5 space-y-4">
+            <a className="flex items-center gap-3 text-on-surface hover:text-primary transition-colors" href={`mailto:${profile.email}`}>
+              <span className="material-symbols-outlined text-primary">mail</span>
+              <span className="font-mono-technical text-mono-technical break-all">{profile.email}</span>
+            </a>
+            <div className="flex items-center gap-3 text-on-surface-variant">
+              <span className="material-symbols-outlined text-primary">phone_in_talk</span>
+              <span className="font-mono-technical text-mono-technical">
+                Phone details are shared after consultation review.
+              </span>
+            </div>
+          </div>
+
           <div className="relative w-full aspect-video rounded-xl overflow-hidden glass-border-gold bg-surface-container-lowest flex items-center justify-center group">
             <div
               className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:opacity-60 transition-opacity duration-700"
@@ -99,7 +112,7 @@ export default function Contact() {
                 <ContactField error={errors.name?.message} label="Full Name">
                   <input className="w-full bg-transparent border-0 border-b border-outline-variant text-on-surface font-body-md text-body-md py-3 px-0 focus:ring-0 placeholder-transparent peer transition-colors focus:border-tertiary" id="name" placeholder="Name" type="text" {...register("name")} />
                 </ContactField>
-                <ContactField error={errors.email?.message} label="Corporate Email">
+                <ContactField error={errors.email?.message} label="Email Address">
                   <input className="w-full bg-transparent border-0 border-b border-outline-variant text-on-surface font-body-md text-body-md py-3 px-0 focus:ring-0 placeholder-transparent peer transition-colors focus:border-tertiary" id="email" placeholder="Email" type="email" {...register("email")} />
                 </ContactField>
               </div>

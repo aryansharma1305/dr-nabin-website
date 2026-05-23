@@ -37,7 +37,7 @@ export async function deleteCertificate(slot) {
   return json;
 }
 
-export async function uploadCertificateToCloudinary(file) {
+export async function uploadImageToCloudinary(file) {
   if (!file?.type?.startsWith("image/")) {
     throw new Error("Please upload an image file.");
   }
@@ -63,6 +63,8 @@ export async function uploadCertificateToCloudinary(file) {
     publicId: json.public_id,
   };
 }
+
+export const uploadCertificateToCloudinary = uploadImageToCloudinary;
 
 async function getCloudinaryUploadSignature() {
   const res = await fetch("/api/cloudinary-signature", {

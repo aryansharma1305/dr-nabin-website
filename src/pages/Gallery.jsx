@@ -3,8 +3,8 @@ import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import FloatingSocial from "../components/FloatingSocial.jsx";
 import CustomCursor from "../components/CustomCursor.jsx";
-import { certificateSlots, awards } from "./pageContent.js";
-import { getCertificates, mergeCertificateSlots } from "../api/certificates.js";
+import { awards } from "./pageContent.js";
+import { getGalleryItems } from "../api/gallery-items.js";
 import drNabinPhoto from "../assets/dr-nabin.jpeg";
 import book1 from "../assets/book-1.jpeg";
 import book2 from "../assets/book-2.jpeg";
@@ -18,16 +18,16 @@ const galleryItems = [
 ];
 
 export default function Gallery() {
-  const [storedCertificates, setStoredCertificates] = useState({});
+  const [uploadedItems, setUploadedItems] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
-    getCertificates()
-      .then((certificates) => {
-        if (isMounted) setStoredCertificates(certificates);
+    getGalleryItems()
+      .then((items) => {
+        if (isMounted) setUploadedItems(items);
       })
       .catch(() => {
-        if (isMounted) setStoredCertificates({});
+        if (isMounted) setUploadedItems([]);
       });
 
     return () => {
@@ -35,7 +35,7 @@ export default function Gallery() {
     };
   }, []);
 
-  const mergedCertificateSlots = mergeCertificateSlots(certificateSlots, storedCertificates);
+  const visibleItems = [...uploadedItems, ...galleryItems];
 
   return (
     <div className="bg-background text-on-background min-h-screen overflow-x-hidden">
@@ -48,58 +48,28 @@ export default function Gallery() {
         <section className="mb-20">
           <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase block mb-5">Gallery</span>
           <h1 className="font-display-sm text-display-sm md:text-[72px] md:leading-[80px] text-on-surface mb-6">
-            Certificates, Awards <span className="text-gradient-gold">& Books</span>
+            Clinical Moments, Awards <span className="text-gradient-gold">& Books</span>
           </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
-            A dedicated gallery area for profile images, certificates, awards, achievements, and published book visuals.
+            A curated visual archive for certificates, awards, academic moments, events, profile images, and published book visuals.
           </p>
         </section>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-section-gap">
-          {galleryItems.map((item) => (
-            <article className="glass-panel rounded-2xl overflow-hidden border border-primary/20 group" key={item.title}>
+          {visibleItems.map((item) => (
+            <article className="glass-panel rounded-2xl overflow-hidden border border-primary/20 group" key={item.id || item.title}>
               <div className="aspect-[3/4] bg-surface-container-low overflow-hidden">
                 <img alt={item.title} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700" src={item.image} />
               </div>
               <div className="p-5">
-                <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase">{item.type}</span>
+                <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase">{item.category || item.type}</span>
                 <h2 className="font-body-lg text-body-lg text-on-surface mt-2">{item.title}</h2>
+                {item.description && (
+                  <p className="font-mono-technical text-mono-technical text-on-surface-variant mt-2 line-clamp-3">{item.description}</p>
+                )}
               </div>
             </article>
           ))}
-        </section>
-
-        <section className="mb-section-gap">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-8">
-            <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase break-words">Certificate Upload Slots</span>
-            <div className="hidden sm:block flex-1 h-px bg-primary/10"></div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-gutter">
-            {mergedCertificateSlots.map((slot) => (
-              <div
-                className={`min-h-[220px] sm:aspect-[4/3] rounded-2xl border bg-surface-container-low/40 backdrop-blur-xl flex flex-col items-center justify-center text-center hover:border-primary/60 transition-all duration-300 overflow-hidden min-w-0 ${
-                  slot.image ? "border-primary/20 p-0" : "border-dashed border-primary/30 p-5 sm:p-6"
-                }`}
-                key={slot.slot}
-              >
-                {slot.image ? (
-                  <div className="relative w-full h-full min-h-[220px]">
-                    <img alt={slot.title} className="w-full h-full object-cover" src={slot.image} />
-                    <div className="absolute inset-x-0 bottom-0 bg-background/85 backdrop-blur-md p-4 text-left">
-                      <p className="font-label-caps text-label-caps text-on-surface break-words">{slot.title}</p>
-                      <p className="font-mono-technical text-mono-technical text-on-surface-variant mt-1">{slot.slot}</p>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <span className="material-symbols-outlined text-primary text-4xl mb-4">add_photo_alternate</span>
-                    <p className="font-label-caps text-label-caps text-on-surface break-words">{slot.title}</p>
-                    <p className="font-mono-technical text-mono-technical text-on-surface-variant mt-2">{slot.slot}</p>
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
         </section>
 
         <section>

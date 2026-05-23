@@ -66,6 +66,17 @@ async function ensureTables() {
       uploaded_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS gallery_items (
+      id          BIGSERIAL PRIMARY KEY,
+      title       TEXT        NOT NULL,
+      category    TEXT        NOT NULL,
+      description TEXT,
+      image_url   TEXT        NOT NULL,
+      public_id   TEXT,
+      uploaded_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
   console.log("✅  Tables ready");
 }
 
@@ -133,6 +144,33 @@ app.delete("/api/certificates", async (req, res) => {
   const { slot } = req.query;
   if (!slot) return res.status(400).json({ ok: false, error: "slot required." });
   await sql`DELETE FROM certificate_images WHERE slot = ${slot}`;
+  res.json({ ok: true });
+});
+
+// ── /api/gallery-items ──────────────────────────────────────────────────────
+app.get("/api/gallery-items", async (_req, res) => {
+  const rows = await sql`SELECT * FROM gallery_items ORDER BY uploaded_at DESC`;
+  res.json({ ok: true, data: rows });
+});
+
+app.post("/api/gallery-items", async (req, res) => {
+  const { title, category, description, imageUrl, publicId } = req.body;
+  if (!title || !category || !imageUrl) {
+    return res.status(400).json({ ok: false, error: "Missing required fields." });
+  }
+
+  const [row] = await sql`
+    INSERT INTO gallery_items (title, category, description, image_url, public_id)
+    VALUES (${title}, ${category}, ${description || null}, ${imageUrl}, ${publicId || null})
+    RETURNING *
+  `;
+  res.status(201).json({ ok: true, data: row });
+});
+
+app.delete("/api/gallery-items", async (req, res) => {
+  const { id } = req.query;
+  if (!id) return res.status(400).json({ ok: false, error: "id required." });
+  await sql`DELETE FROM gallery_items WHERE id = ${id}`;
   res.json({ ok: true });
 });
 

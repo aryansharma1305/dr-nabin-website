@@ -22,7 +22,7 @@ export function getCloudinaryConfig() {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME || fromUrl.cloudName,
     apiKey: process.env.CLOUDINARY_API_KEY || fromUrl.apiKey,
     apiSecret: process.env.CLOUDINARY_API_SECRET || fromUrl.apiSecret,
-    folder: process.env.CLOUDINARY_CERTIFICATE_FOLDER || "dr-yadav-certificates",
+    folder: process.env.CLOUDINARY_GALLERY_FOLDER || process.env.CLOUDINARY_CERTIFICATE_FOLDER || "dr-yadav-gallery",
   };
 }
 
