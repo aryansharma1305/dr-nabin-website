@@ -5,103 +5,104 @@ import Footer from "../components/Footer.jsx";
 import FloatingSocial from "../components/FloatingSocial.jsx";
 import CustomCursor from "../components/CustomCursor.jsx";
 import { useReveal } from "./useReveal.js";
+import { academicLinks } from "./pageContent.js";
 
-const GOOGLE_SCHOLAR_URL = "https://scholar.google.com/citations?user=eT6ZPx0AAAAJ&hl=en";
+const RESEARCH_GATE_URL = academicLinks.researchGate;
 
 const publications = [
   {
-    title: "A study on functional outcome of proximal humeral fractures treated with PHILOS plate",
-    authors: "NK Yadav, et al.",
-    journal: "International Journal of Orthopaedics Sciences",
-    year: "2019",
-    citations: 1,
-    category: "Orthopedics",
-    link: GOOGLE_SCHOLAR_URL,
+    title: "Quantitative MR Perfusion Imaging Post-Endovascular Therapy: Defining Reperfusion Biomarkers In Acute Ischemic Stroke",
+    authors: "Nabin Kumar Yadav, Bijay Yadav, Bhawesh Yadav, Birendra Yadav",
+    journal: "International Journal For Multidisciplinary Research",
+    year: "Jul 2025",
+    citations: 0,
+    category: "Neuroradiology",
+    link: RESEARCH_GATE_URL,
   },
   {
-    title: "Diagnostic Accuracy of MRI in Evaluation of Meniscal and Ligamentous Injuries of the Knee Joint",
-    authors: "NK Yadav, et al.",
-    journal: "Clinical Radiology & Imaging Journal",
-    year: "2020",
+    title: "Ultrasound Elastography in the Diagnosis of Endometriosis & Adenomyosis-Comparing the Diagnostic Accuracy of Transvaginal Ultrasound with Elastography Vs. Mri in Deep Infiltrating Endometriosis and Adenomyosis",
+    authors: "Nabin Kumar Yadav",
+    journal: "International Journal of Latest Technology in Engineering Management & Applied Science",
+    year: "Jun 2025",
     citations: 0,
-    category: "Radiology",
-    link: GOOGLE_SCHOLAR_URL,
+    category: "Women's Imaging",
+    link: RESEARCH_GATE_URL,
   },
   {
-    title: "Role of CT Scan in Evaluation of Mediastinal Masses",
-    authors: "NK Yadav, et al.",
-    journal: "International Journal of Medical Research",
-    year: "2020",
+    title: "Radiological Assessment and Surgical Correlation in Hernia Repair: From Diagnosis to Postoperative Follow-Up",
+    authors: "Dr. Gayatri Prasad Sharma, Dr. Mohammad Ahamadullah, Dr. Rakesh Kumar Yadav, Nabin Kumar Yadav, Aditya",
+    journal: "ResearchGate publication",
+    year: "Jun 2025",
     citations: 0,
-    category: "Radiology",
-    link: GOOGLE_SCHOLAR_URL,
+    category: "Surgery",
+    link: RESEARCH_GATE_URL,
   },
   {
-    title: "Ultrasonographic Evaluation of Thyroid Nodules and Its Histopathological Correlation",
-    authors: "NK Yadav, et al.",
-    journal: "Journal of Medical Science & Clinical Research",
-    year: "2021",
+    title: "Integration of Ultrafast Laser Therapy and MicroRNA (miRNA)-Based Precision Medicine for Chronic Pain Management in Kyrgyzstan: A Long One Year Multi-Regional Study with Advanced Mathematical and Scientific Modeling",
+    authors: "Nabin Kumar Yadav, Mohammad Ahamadullah, John Bennet Benny, Mm Shahriar",
+    journal: "International Journal of Innovative Science and Research Technology",
+    year: "Jun 2025",
     citations: 0,
-    category: "Radiology",
-    link: GOOGLE_SCHOLAR_URL,
+    category: "Pain Medicine",
+    link: RESEARCH_GATE_URL,
   },
   {
-    title: "Role of Color Doppler in Lower Extremity Deep Vein Thrombosis",
-    authors: "NK Yadav, et al.",
-    journal: "Indian Journal of Radiology & Imaging",
-    year: "2021",
+    title: "Advancement of Fetal Neuroimaging. Assessing brain Anomalies using Fetal MRI-A Review of the role of fetal MRI in diagnosing congenital Brain Abnormalities and its implications for perinatal Management",
+    authors: "Nabin Kumar Yadav, Dr. Mohammad Ahamadullah, Dr. Bibha Yadav",
+    journal: "ResearchGate publication",
+    year: "May 2025",
     citations: 0,
-    category: "Radiology",
-    link: GOOGLE_SCHOLAR_URL,
+    category: "Neuroradiology",
+    link: RESEARCH_GATE_URL,
   },
   {
-    title: "Radiological Evaluation of Paranasal Sinus Pathologies Using CT Scan",
-    authors: "NK Yadav, et al.",
-    journal: "Journal of Clinical & Diagnostic Research",
-    year: "2022",
+    title: "Patient Outcome Comparative Analysis In Laparoscopic Vs Open Appendectomy",
+    authors: "Dr. Gayatri Prasad Sharma, Nabin Kumar Yadav, Dr. Mohammad Ahamadullah, Dr. Krishna Joshi",
+    journal: "International Journal of Engineering and Creative Science",
+    year: "May 2025",
     citations: 0,
-    category: "Radiology",
-    link: GOOGLE_SCHOLAR_URL,
+    category: "Surgery",
+    link: RESEARCH_GATE_URL,
   },
   {
-    title: "Stereotactic Radiosurgery: Advances in Technique and Clinical Outcomes",
-    authors: "NK Yadav, et al.",
-    journal: "Oncology Reports & Reviews",
-    year: "2023",
+    title: "Role of MRI in Diagnosing Placenta Accreta Spectrum Disorders: Evaluating the Sensitivity & Specificity of MRI in Detecting Placenta Accreta, Increta & Percreta Compared to Ultrasound",
+    authors: "Nabin Kumar Yadav, Farjana Afrin, Mohammad Ahamadullah, Bibha Yadav",
+    journal: "International Journal of Innovative Science and Research Technology",
+    year: "May 2025",
     citations: 0,
-    category: "Oncology",
-    link: GOOGLE_SCHOLAR_URL,
+    category: "Women's Imaging",
+    link: RESEARCH_GATE_URL,
   },
   {
-    title: "Clinical Oncology Fellowship Experience: A Comprehensive Review of Case Outcomes",
-    authors: "NK Yadav, et al.",
-    journal: "Apollo Medversity Clinical Reports",
-    year: "2023",
+    title: "Evaluation Of Thyroid Nodules By Ultrasound Elastography Using Acoustic Radiation Force Impulse (Arfi) Imaging",
+    authors: "Nabin Kumar Yadav, Farjana Afrin, Bibha Yadav",
+    journal: "ResearchGate publication",
+    year: "Apr 2025",
     citations: 0,
-    category: "Oncology",
-    link: GOOGLE_SCHOLAR_URL,
+    category: "Ultrasound",
+    link: RESEARCH_GATE_URL,
   },
   {
-    title: "Teleradiology in Emerging Economies: Bridging the Diagnostic Gap",
-    authors: "NK Yadav, et al.",
-    journal: "Journal of Global Health Delivery",
-    year: "2024",
+    title: "Protocols for Enhancing Postoperative Recovery on postoperative outcomes in major surgeries",
+    authors: "Mohammad Ahamadullah, Nabin Kumar Yadav, Sabenaj Begam, Gulnaj Begam",
+    journal: "ResearchGate publication",
+    year: "Apr 2025",
     citations: 0,
-    category: "Education",
-    link: GOOGLE_SCHOLAR_URL,
+    category: "Surgery",
+    link: RESEARCH_GATE_URL,
   },
   {
-    title: "FMGE Preparation Strategies: Evidence-Based Approaches for International Medical Graduates",
-    authors: "NK Yadav, et al.",
-    journal: "Medical Education Online",
-    year: "2024",
+    title: "Knee Trauma and Ganglion Cysts on the Anterior Cruciate Ligament: A Study of 50 Patients",
+    authors: "Rakesh Kumar Yadav, Partha Roy, Nabin Kumar Yadav",
+    journal: "ResearchGate publication",
+    year: "Nov 2024",
     citations: 0,
-    category: "Education",
-    link: GOOGLE_SCHOLAR_URL,
+    category: "Musculoskeletal",
+    link: RESEARCH_GATE_URL,
   },
 ];
 
-const categories = ["All", "Radiology", "Oncology", "Orthopedics", "Education"];
+const categories = ["All", "Neuroradiology", "Women's Imaging", "Surgery", "Pain Medicine", "Ultrasound", "Musculoskeletal"];
 
 export default function Publications() {
   useReveal();
@@ -135,14 +136,14 @@ export default function Publications() {
             <div className="md:col-span-4 flex items-end justify-end stagger-item">
               <a
                 className="inline-flex items-center gap-3 bg-surface-container-low/60 backdrop-blur-xl border border-primary/30 rounded-full px-6 py-3 text-primary font-label-caps text-label-caps hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 group"
-                href={GOOGLE_SCHOLAR_URL}
+                href={RESEARCH_GATE_URL}
                 rel="noreferrer"
                 target="_blank"
               >
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                   <path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/>
                 </svg>
-                View Google Scholar Profile
+                View ResearchGate
                 <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_outward</span>
               </a>
             </div>
@@ -153,20 +154,20 @@ export default function Publications() {
         <section className="mb-16 stagger-item">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-surface-container-low/60 backdrop-blur-xl border border-primary/20 rounded-xl p-6 text-center">
-              <div className="font-display-sm text-[32px] text-primary font-bold">{publications.length}+</div>
+              <div className="font-display-sm text-[32px] text-primary font-bold">10</div>
               <div className="font-label-caps text-label-caps text-on-surface-variant mt-1">Publications</div>
+            </div>
+            <div className="bg-surface-container-low/60 backdrop-blur-xl border border-primary/20 rounded-xl p-6 text-center">
+              <div className="font-display-sm text-[32px] text-primary font-bold">69</div>
+              <div className="font-label-caps text-label-caps text-on-surface-variant mt-1">Reads</div>
             </div>
             <div className="bg-surface-container-low/60 backdrop-blur-xl border border-primary/20 rounded-xl p-6 text-center">
               <div className="font-display-sm text-[32px] text-primary font-bold">{totalCitations}</div>
               <div className="font-label-caps text-label-caps text-on-surface-variant mt-1">Citations</div>
             </div>
             <div className="bg-surface-container-low/60 backdrop-blur-xl border border-primary/20 rounded-xl p-6 text-center">
-              <div className="font-display-sm text-[32px] text-primary font-bold">4</div>
-              <div className="font-label-caps text-label-caps text-on-surface-variant mt-1">Research Areas</div>
-            </div>
-            <div className="bg-surface-container-low/60 backdrop-blur-xl border border-primary/20 rounded-xl p-6 text-center">
-              <div className="font-display-sm text-[32px] text-primary font-bold">6+</div>
-              <div className="font-label-caps text-label-caps text-on-surface-variant mt-1">Years of Research</div>
+              <div className="font-display-sm text-[32px] text-primary font-bold">RG</div>
+              <div className="font-label-caps text-label-caps text-on-surface-variant mt-1">ResearchGate</div>
             </div>
           </div>
         </section>
@@ -245,7 +246,7 @@ export default function Publications() {
           </div>
         </section>
 
-        {/* Google Scholar CTA */}
+        {/* Academic Profiles CTA */}
         <section className="stagger-item bg-surface-container-low/80 backdrop-blur-2xl border border-primary/20 rounded-2xl p-12 md:p-24 text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
           <div className="mb-6">
@@ -255,20 +256,32 @@ export default function Publications() {
           </div>
           <h2 className="font-display-sm text-display-sm text-on-surface mb-6">View Full Research Profile</h2>
           <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-10">
-            Explore my complete publication history, citation metrics, and academic contributions on Google Scholar.
+            Explore publication history, reads, and academic contributions through the official ResearchGate profile.
           </p>
-          <a
-            className="w-full sm:w-auto bg-primary text-on-primary font-mono-technical text-mono-technical px-8 py-4 rounded hover:bg-primary-fixed transition-colors duration-300 shadow-[0_0_20px_rgba(212,168,67,0.2)] magnetic-btn inline-flex justify-center items-center gap-3"
-            href={GOOGLE_SCHOLAR_URL}
-            rel="noreferrer"
-            target="_blank"
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              className="w-full sm:w-auto bg-primary text-on-primary font-mono-technical text-mono-technical px-8 py-4 rounded hover:bg-primary-fixed transition-colors duration-300 shadow-[0_0_20px_rgba(212,168,67,0.2)] magnetic-btn inline-flex justify-center items-center gap-3"
+              href={RESEARCH_GATE_URL}
+              rel="noreferrer"
+              target="_blank"
+            >
+              Open ResearchGate
+              <span className="material-symbols-outlined text-sm">arrow_outward</span>
+            </a>
+          </div>
+        </section>
+
+        <section className="stagger-item mt-16 bg-surface-container-low/40 backdrop-blur-xl border border-primary/10 rounded-2xl p-12 md:p-16 text-center">
+          <h2 className="font-headline-lg text-headline-lg text-on-surface mb-4">Books Published</h2>
+          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-8">
+            View published radiology books and place an order request directly through the book order page.
+          </p>
+          <Link
+            className="bg-primary text-on-primary font-mono-technical text-mono-technical px-8 py-4 rounded hover:bg-primary-fixed transition-colors duration-300 magnetic-btn inline-flex justify-center"
+            to="/books"
           >
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-              <path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/>
-            </svg>
-            Open Google Scholar
-            <span className="material-symbols-outlined text-sm">arrow_outward</span>
-          </a>
+            View Books
+          </Link>
         </section>
 
         {/* Collaboration CTA */}

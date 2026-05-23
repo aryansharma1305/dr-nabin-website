@@ -13,6 +13,20 @@
   body {
     @apply bg-background text-on-background min-h-screen selection:bg-primary/30 selection:text-primary overflow-x-hidden;
   }
+
+  html,
+  body,
+  #root {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+  }
 }
 
 @layer components {

@@ -9,6 +9,8 @@ import BookConsultation from "./pages/BookConsultation.jsx";
 import Publications from "./pages/Publications.jsx";
 import Contact from "./pages/Contact.jsx";
 import Admin from "./pages/Admin.jsx";
+import Gallery from "./pages/Gallery.jsx";
+import Books from "./pages/Books.jsx";
 
 const pageVariants = {
   initial: { opacity: 0, y: 24 },
@@ -63,6 +65,8 @@ export default function App() {
         <Route path="/services" element={<PageShell><Services /></PageShell>} />
         <Route path="/book-consultation" element={<PageShell><BookConsultation /></PageShell>} />
         <Route path="/publications" element={<PageShell><Publications /></PageShell>} />
+        <Route path="/gallery" element={<PageShell><Gallery /></PageShell>} />
+        <Route path="/books" element={<PageShell><Books /></PageShell>} />
         <Route path="/contact" element={<PageShell><Contact /></PageShell>} />
         <Route path="/admin" element={<PageShell><Admin /></PageShell>} />
         <Route path="*" element={<Navigate to="/" replace />} />

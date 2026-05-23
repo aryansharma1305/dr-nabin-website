@@ -1,5 +1,6 @@
 export const profile = {
   name: "Dr. Nabin Kumar Yadav",
+  displayName: "Dr. N. K. Yadav",
   title: "Gold Medalist",
   credentials: "MBBS, DMRD",
   fellowships: "Fellowship in Clinical Oncology | Fellowship in Stereotactic Radiosurgery",
@@ -8,6 +9,17 @@ export const profile = {
   currentRoles: ["Academic Director of Medicine at Daaru Salaam University", "Attending Radiologist at EMHRC"],
   email: "drnabinkyadav@gmail.com",
   phone: "+91-XXXXXXXXXX",
+};
+
+export const profileStats = [
+  { target: 3, suffix: "+", label: "Years Experience" },
+  { target: 10000, suffix: "+", label: "Scans Analyzed" },
+  { target: 25, suffix: "+", label: "Publications" },
+  { target: 9, suffix: "", label: "Awards" },
+];
+
+export const academicLinks = {
+  researchGate: "https://www.researchgate.net/profile/Nabin-Yadav-8",
 };
 
 export const bioParagraphs = [
@@ -36,6 +48,123 @@ export const services = [
   { title: "Research Partnership", icon: "biotech", description: "Data analysis and radiological oversight for clinical trials, academic research, and institutional studies.", category: "research" },
 ];
 
+export const consultationModalities = [
+  {
+    code: "USG",
+    title: "Ultrasound / USG",
+    icon: "ultrasound",
+    description: "Ultrasound reporting and second-opinion review with clinical correlation.",
+  },
+  {
+    code: "XRAY",
+    title: "X-Ray",
+    icon: "radiology",
+    description: "Chest, bone, emergency, and routine X-Ray interpretation.",
+  },
+  {
+    code: "CT",
+    title: "CT Scan",
+    icon: "scanner",
+    description: "CT Head, chest, abdomen, trauma, oncology, and emergency reporting.",
+  },
+  {
+    code: "MRI",
+    title: "MRI",
+    icon: "neurology",
+    description: "MRI reporting for neuro, spine, MSK, abdomen, and oncology-related imaging.",
+  },
+];
+
+export const awards = [
+  {
+    title: "Gold Medal in Radiology",
+    issuer: "Central Christian University",
+    year: "Academic Excellence",
+    icon: "workspace_premium",
+  },
+  {
+    title: "Academic Leadership",
+    issuer: "Daaru Salaam University",
+    year: "Medicine",
+    icon: "account_balance",
+  },
+  {
+    title: "Medical Education Recognition",
+    issuer: "Docversity India",
+    year: "FMGE Radiology & OBG",
+    icon: "school",
+  },
+  {
+    title: "Global Visiting Faculty",
+    issuer: "International Medical Universities",
+    year: "Kyrgyzstan, Uzbekistan, Kazakhstan, Russia",
+    icon: "public",
+  },
+  {
+    title: "Clinical Oncology Fellowship",
+    issuer: "Apollo Hospital / Medversity",
+    year: "Fellowship",
+    icon: "coronavirus",
+  },
+  {
+    title: "Stereotactic Radiosurgery Fellowship",
+    issuer: "Canada",
+    year: "Fellowship",
+    icon: "precision_manufacturing",
+  },
+  {
+    title: "Research Contribution",
+    issuer: "Radiology & Oncology",
+    year: "Scientific Publications",
+    icon: "biotech",
+  },
+  {
+    title: "Teleradiology Service",
+    issuer: "Diagnostic Imaging",
+    year: "Remote Reporting",
+    icon: "connected_tv",
+  },
+  {
+    title: "Patient Care Excellence",
+    issuer: "Clinical Radiology",
+    year: "Precision Diagnosis",
+    icon: "health_and_safety",
+  },
+];
+
+export const certificateSlots = awards.map((award, index) => ({
+  ...award,
+  slot: `Certificate Slot ${index + 1}`,
+  image: null,
+}));
+
+export const books = [
+  {
+    id: "chest-xray",
+    title: "Chest X-Ray Interpretation",
+    subtitle: "A Practical Approach",
+    category: "XRAY",
+    image: "book-1.jpeg",
+    description: "A practical guide to systematic chest X-Ray interpretation with clear explanations and clinical relevance.",
+  },
+  {
+    id: "ct-head",
+    title: "Interpretation of CT Head",
+    subtitle: "Radiology Guide",
+    category: "CT",
+    image: "book-2.jpeg",
+    description: "A focused visual guide for CT Head interpretation, anatomy, pathology patterns, and reporting confidence.",
+  },
+  {
+    id: "usg-basic-advanced",
+    title: "Basic to Advance USG",
+    subtitle: "A Comprehensive Guide to Ultrasound",
+    category: "USG",
+    image: "book-3.jpeg",
+    description: "A comprehensive ultrasound guide designed to move learners from foundations to advanced diagnostic confidence.",
+  },
+];
+
 export const educationHighlights = [
   { icon: "school", title: "FMGE Faculty", detail: "Radiology & OBG at Docversity India", color: "text-tertiary-fixed-dim" },
   { icon: "public", title: "Visiting Faculty", detail: "Kyrgyzstan, Uzbekistan, Kazakhstan, Russia", color: "text-secondary" },
@@ -48,4 +177,5 @@ export const socialLinks = [
   { label: "Instagram", icon: "photo_camera", href: "https://www.instagram.com/drnabinyadav?igsh=Z3Q5YWFycWYwbHMz&utm_source=qr" },
   { label: "YouTube", icon: "play_circle", href: "https://youtube.com/@drnabinkyadav?si=9_mLsT6IOKOfpqmA" },
   { label: "WhatsApp", icon: "chat", href: "https://whatsapp.com/channel/0029VaoEBx3IyPtL13p7PX3d" },
+  { label: "ResearchGate", icon: "science", href: academicLinks.researchGate },
 ];

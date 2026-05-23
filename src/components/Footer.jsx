@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
+import { academicLinks, profile } from "../pages/pageContent.js";
 
 const footerLinks = [
   { label: "Portfolio", to: "/" },
   { label: "About", to: "/about" },
   { label: "Research", to: "/publications" },
+  { label: "Books", to: "/books" },
+  { label: "Gallery", to: "/gallery" },
   { label: "Clinical Services", to: "/services" },
   { label: "Contact", to: "/contact" },
 ];
@@ -46,11 +49,11 @@ const socialLinks = [
     ),
   },
   {
-    label: "Scholar",
-    href: "https://scholar.google.com/citations?user=eT6ZPx0AAAAJ&hl=en",
+    label: "ResearchGate",
+    href: academicLinks.researchGate,
     icon: (
       <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-        <path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z" />
+        <path d="M4 4h7.2c2.8 0 4.8 1.7 4.8 4.3 0 1.8-.9 3.1-2.4 3.8L17 20h-3.1l-3-7H6.8v7H4V4zm2.8 2.4v4.2h4.1c1.4 0 2.2-.8 2.2-2.1s-.8-2.1-2.2-2.1H6.8zM18.4 4H21v16h-2.6V4z" />
       </svg>
     ),
   },
@@ -66,8 +69,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 mb-16">
           {/* Brand column */}
           <div className="space-y-6">
-            <Link className="font-headline-lg text-headline-lg text-primary tracking-tighter block" to="/">
-              Dr. Nabin Kumar Yadav
+            <Link className="font-headline-lg text-[24px] leading-8 text-primary tracking-normal block" to="/">
+              {profile.displayName}
             </Link>
             <p className="font-body-md text-body-md text-on-surface-variant max-w-xs leading-relaxed">
               Gold Medalist Radiologist, Medical Educator, and Oncology Fellow advancing precision diagnostics worldwide.
@@ -152,14 +155,11 @@ export default function Footer() {
             </a>
             <a
               className="text-on-surface-variant font-mono-technical text-mono-technical hover:text-primary transition-all text-xs inline-flex items-center gap-1.5"
-              href="https://scholar.google.com/citations?user=eT6ZPx0AAAAJ&hl=en"
+              href={academicLinks.researchGate}
               rel="noreferrer"
               target="_blank"
             >
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
-                <path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z" />
-              </svg>
-              Google Scholar
+              ResearchGate
             </a>
           </div>
         </div>

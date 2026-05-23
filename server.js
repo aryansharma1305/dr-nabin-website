@@ -7,6 +7,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { neon } from "@neondatabase/serverless";
+import { createCloudinarySignature, getCloudinaryConfig } from "./api/_cloudinary.js";
 
 const app = express();
 app.use(cors());
@@ -23,12 +24,14 @@ async function ensureTables() {
       last_name    TEXT        NOT NULL,
       email        TEXT        NOT NULL,
       phone        TEXT,
+      modality     TEXT,
       consult_type TEXT        NOT NULL,
       timeframe    TEXT,
       message      TEXT,
       submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
+  await sql`ALTER TABLE consultations ADD COLUMN IF NOT EXISTS modality TEXT`;
   await sql`
     CREATE TABLE IF NOT EXISTS messages (
       id           BIGSERIAL PRIMARY KEY,
@@ -40,21 +43,120 @@ async function ensureTables() {
       submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS book_orders (
+      id           BIGSERIAL PRIMARY KEY,
+      book_id      TEXT        NOT NULL,
+      book_title   TEXT        NOT NULL,
+      quantity     INTEGER     NOT NULL DEFAULT 1,
+      name         TEXT        NOT NULL,
+      email        TEXT        NOT NULL,
+      phone        TEXT,
+      address      TEXT,
+      submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS certificate_images (
+      slot        TEXT        PRIMARY KEY,
+      title       TEXT        NOT NULL,
+      issuer      TEXT,
+      image_url   TEXT        NOT NULL,
+      public_id   TEXT,
+      uploaded_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
   console.log("✅  Tables ready");
 }
 
 // ── /api/consultations ────────────────────────────────────────────────────────
 app.post("/api/consultations", async (req, res) => {
-  const { firstName, lastName, email, phone, consultType, timeframe, message } = req.body;
+  const { firstName, lastName, email, phone, modality, consultType, timeframe, message } = req.body;
   if (!firstName || !lastName || !email || !consultType)
     return res.status(400).json({ ok: false, error: "Missing required fields." });
 
   const [row] = await sql`
-    INSERT INTO consultations (first_name, last_name, email, phone, consult_type, timeframe, message)
-    VALUES (${firstName}, ${lastName}, ${email}, ${phone || null}, ${consultType}, ${timeframe || null}, ${message || null})
+    INSERT INTO consultations (first_name, last_name, email, phone, modality, consult_type, timeframe, message)
+    VALUES (${firstName}, ${lastName}, ${email}, ${phone || null}, ${modality || null}, ${consultType}, ${timeframe || null}, ${message || null})
     RETURNING *
   `;
   res.status(201).json({ ok: true, data: row });
+});
+
+// ── /api/book-orders ─────────────────────────────────────────────────────────
+app.post("/api/book-orders", async (req, res) => {
+  const { bookId, bookTitle, quantity, name, email, phone, address } = req.body;
+  if (!bookId || !bookTitle || !name || !email)
+    return res.status(400).json({ ok: false, error: "Missing required fields." });
+
+  const [row] = await sql`
+    INSERT INTO book_orders (book_id, book_title, quantity, name, email, phone, address)
+    VALUES (${bookId}, ${bookTitle}, ${Number(quantity) || 1}, ${name}, ${email}, ${phone || null}, ${address || null})
+    RETURNING *
+  `;
+  res.status(201).json({ ok: true, data: row });
+});
+
+app.get("/api/book-orders", async (_req, res) => {
+  const rows = await sql`SELECT * FROM book_orders ORDER BY submitted_at DESC`;
+  res.json({ ok: true, data: rows });
+});
+
+// ── /api/certificates ───────────────────────────────────────────────────────
+app.get("/api/certificates", async (_req, res) => {
+  const rows = await sql`SELECT * FROM certificate_images ORDER BY slot ASC`;
+  res.json({ ok: true, data: rows });
+});
+
+app.put("/api/certificates", async (req, res) => {
+  const { slot, title, issuer, imageUrl, publicId } = req.body;
+  if (!slot || !title || !imageUrl) {
+    return res.status(400).json({ ok: false, error: "Missing required fields." });
+  }
+
+  const [row] = await sql`
+    INSERT INTO certificate_images (slot, title, issuer, image_url, public_id, uploaded_at)
+    VALUES (${slot}, ${title}, ${issuer || null}, ${imageUrl}, ${publicId || null}, NOW())
+    ON CONFLICT (slot)
+    DO UPDATE SET
+      title = EXCLUDED.title,
+      issuer = EXCLUDED.issuer,
+      image_url = EXCLUDED.image_url,
+      public_id = EXCLUDED.public_id,
+      uploaded_at = NOW()
+    RETURNING *
+  `;
+  res.json({ ok: true, data: row });
+});
+
+app.delete("/api/certificates", async (req, res) => {
+  const { slot } = req.query;
+  if (!slot) return res.status(400).json({ ok: false, error: "slot required." });
+  await sql`DELETE FROM certificate_images WHERE slot = ${slot}`;
+  res.json({ ok: true });
+});
+
+// ── /api/cloudinary-signature ───────────────────────────────────────────────
+app.post("/api/cloudinary-signature", async (_req, res) => {
+  const { cloudName, apiKey, apiSecret, folder } = getCloudinaryConfig();
+
+  if (!cloudName || !apiKey || !apiSecret) {
+    return res.status(500).json({ ok: false, error: "Cloudinary environment variables are not configured." });
+  }
+
+  const timestamp = Math.round(Date.now() / 1000);
+  const signature = createCloudinarySignature({ folder, timestamp }, apiSecret);
+
+  res.json({
+    ok: true,
+    data: {
+      apiKey,
+      cloudName,
+      folder,
+      signature,
+      timestamp,
+    },
+  });
 });
 
 app.get("/api/consultations", async (_req, res) => {

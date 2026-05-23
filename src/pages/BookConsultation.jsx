@@ -7,7 +7,7 @@ import Footer from "../components/Footer.jsx";
 import FloatingSocial from "../components/FloatingSocial.jsx";
 import CustomCursor from "../components/CustomCursor.jsx";
 import { submitBookConsultation } from "../api/book-consultation.js";
-import { profile, services } from "./pageContent.js";
+import { profile, services, consultationModalities } from "./pageContent.js";
 import { useReveal } from "./useReveal.js";
 
 const schema = z.object({
@@ -15,6 +15,7 @@ const schema = z.object({
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Valid email is required"),
   phone: z.string().optional(),
+  modality: z.string().min(1, "Select a modality"),
   consultType: z.string().min(1, "Select a consultation type"),
   timeframe: z.string().min(1, "Select a timeframe"),
   message: z.string().min(10, "Add a brief reason for consultation"),
@@ -50,6 +51,7 @@ export default function BookConsultation() {
       lastName: "",
       email: "",
       phone: "",
+      modality: "",
       consultType: "",
       timeframe: "As soon as possible",
       message: "",
@@ -59,7 +61,7 @@ export default function BookConsultation() {
   const values = watch();
 
   async function nextStep() {
-    const fields = step === 1 ? ["firstName", "lastName", "email"] : ["consultType", "timeframe"];
+    const fields = step === 1 ? ["firstName", "lastName", "email"] : ["modality", "consultType", "timeframe"];
     const ok = await trigger(fields);
     if (ok) setStep((current) => Math.min(current + 1, 3));
   }
@@ -114,6 +116,20 @@ export default function BookConsultation() {
             {step === 2 && (
               <div className="space-y-8 transition-all duration-300 opacity-100 translate-x-0">
                 <div>
+                  <label className="block font-label-caps text-label-caps text-on-surface-variant mb-4">CONSULTATION DETAILS</label>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                    {consultationModalities.map((modality) => (
+                      <label className="gold-stroke rounded-lg p-4 cursor-pointer flex flex-col gap-3 hover:bg-surface-variant transition-colors group" key={modality.code}>
+                        <input className="sr-only peer" type="radio" value={modality.code} {...register("modality")} />
+                        <span className="material-symbols-outlined text-primary text-[28px] peer-checked:text-secondary">{modality.icon}</span>
+                        <span className="font-label-caps text-label-caps text-on-surface group-hover:text-primary transition-colors">{modality.code}</span>
+                        <span className="font-mono-technical text-[11px] leading-relaxed text-on-surface-variant">{modality.description}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {errors.modality && <p className="mb-6 text-error font-mono-technical text-mono-technical">{errors.modality.message}</p>}
+                </div>
+                <div>
                   <label className="block font-label-caps text-label-caps text-on-surface-variant mb-4">CONSULTATION TYPE</label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {consultationTypes.map((type) => (
@@ -148,6 +164,7 @@ export default function BookConsultation() {
                   <h3 className="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-4">Summary</h3>
                   <ul className="space-y-3 font-body-md text-body-md text-on-surface-variant">
                     <li><span className="font-mono-technical text-primary mr-2">Name:</span>{values.firstName} {values.lastName}</li>
+                    <li><span className="font-mono-technical text-primary mr-2">Modality:</span>{values.modality || "--"}</li>
                     <li><span className="font-mono-technical text-primary mr-2">Type:</span>{values.consultType || "--"}</li>
                     <li><span className="font-mono-technical text-primary mr-2">Consultation Fee:</span>{profile.consultationFee}</li>
                   </ul>

@@ -1,6 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { getConsultations, deleteConsultation } from "../api/book-consultation.js";
 import { getMessages, markMessageRead, deleteMessage } from "../api/contact.js";
+import {
+  deleteCertificate,
+  getCertificates,
+  mergeCertificateSlots,
+  saveCertificate,
+  uploadCertificateToCloudinary,
+} from "../api/certificates.js";
+import { certificateSlots } from "./pageContent.js";
 
 const ADMIN_PASSWORD = "dryadav2024";
 
@@ -57,6 +65,9 @@ export default function Admin() {
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
+  const [certificates, setCertificates] = useState({});
+  const [certificateStatus, setCertificateStatus] = useState("");
+  const [certificateError, setCertificateError] = useState("");
 
   const refreshData = useCallback(async () => {
     setLoading(true);
@@ -75,6 +86,16 @@ export default function Admin() {
   useEffect(() => {
     if (isAuthed) refreshData();
   }, [isAuthed, refreshData]);
+
+  useEffect(() => {
+    if (!isAuthed) return;
+
+    getCertificates()
+      .then(setCertificates)
+      .catch((err) => {
+        setCertificateError(err.message || "Failed to load certificates.");
+      });
+  }, [isAuthed]);
 
   function handleLogin(e) {
     e.preventDefault();
@@ -114,13 +135,64 @@ export default function Admin() {
         await markMessageRead(msg.id);
         setMessages((prev) => prev.map((m) => (m.id === msg.id ? { ...m, read: true } : m)));
       } catch (_) {
-        // non-critical — still open the message
+        // non-critical
       }
     }
-    setSelectedItem(msg);
+    setSelectedItem({ ...msg, type: "contact" });
+  }
+
+  async function handleCertificateUpload(slot, file) {
+    if (!file) return;
+
+    setCertificateError("");
+    setCertificateStatus(`Processing ${slot.title}...`);
+
+    try {
+      const uploaded = await uploadCertificateToCloudinary(file);
+      await saveCertificate({
+        slot: slot.slot,
+        title: slot.title,
+        issuer: slot.issuer,
+        imageUrl: uploaded.imageUrl,
+        publicId: uploaded.publicId,
+      });
+
+      const nextCertificates = {
+        ...certificates,
+        [slot.slot]: {
+          slot: slot.slot,
+          title: slot.title,
+          issuer: slot.issuer,
+          image: uploaded.imageUrl,
+          publicId: uploaded.publicId,
+          uploadedAt: new Date().toISOString(),
+        },
+      };
+      setCertificates(nextCertificates);
+      setCertificateStatus(`${slot.title} uploaded to Cloudinary.`);
+    } catch (err) {
+      setCertificateError(err.message || "Could not upload this certificate.");
+      setCertificateStatus("");
+    }
+  }
+
+  async function handleCertificateRemove(slot) {
+    try {
+      await deleteCertificate(slot.slot);
+      const nextCertificates = { ...certificates };
+      delete nextCertificates[slot.slot];
+      setCertificates(nextCertificates);
+      setCertificateStatus(`${slot.title} removed from the website.`);
+      setCertificateError("");
+    } catch (err) {
+      setCertificateError(err.message || "Could not remove this certificate.");
+      setCertificateStatus("");
+    }
   }
 
   const unreadCount = messages.filter((m) => !m.read).length;
+  const mergedCertificateSlots = mergeCertificateSlots(certificateSlots, certificates);
+  const uploadedCertificateCount = Object.values(certificates).filter(Boolean).length;
 
   if (!isAuthed) {
     return (
@@ -178,21 +250,21 @@ export default function Admin() {
       <div className="grain-overlay"></div>
 
       {/* Top bar */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl border-b border-primary/10 px-6 md:px-10 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl border-b border-primary/10 px-4 sm:px-6 md:px-10 h-16 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
             admin_panel_settings
           </span>
-          <span className="font-headline-lg text-headline-lg text-primary tracking-tighter">Admin Dashboard</span>
+          <span className="font-headline-lg text-[20px] md:text-headline-lg text-primary tracking-normal truncate">Admin <span className="hidden sm:inline">Dashboard</span></span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
           <button
             className="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1.5 font-label-caps text-label-caps"
             onClick={refreshData}
             type="button"
           >
             <span className="material-symbols-outlined text-[18px]">refresh</span>
-            Refresh
+            <span className="hidden sm:inline">Refresh</span>
           </button>
           <button
             className="text-on-surface-variant hover:text-error transition-colors flex items-center gap-1.5 font-label-caps text-label-caps"
@@ -200,7 +272,7 @@ export default function Admin() {
             type="button"
           >
             <span className="material-symbols-outlined text-[18px]">logout</span>
-            Logout
+            <span className="hidden sm:inline">Logout</span>
           </button>
         </div>
       </header>
@@ -238,10 +310,25 @@ export default function Admin() {
               </span>
             )}
           </button>
+          <button
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl font-label-caps text-label-caps transition-all ${
+              activeTab === "certificates" ? "bg-primary/10 text-primary border border-primary/20" : "text-on-surface-variant hover:text-primary hover:bg-surface-container-low/60"
+            }`}
+            onClick={() => { setActiveTab("certificates"); setSelectedItem(null); }}
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[18px]">workspace_premium</span>
+            Certificates
+            {uploadedCertificateCount > 0 && (
+              <span className="ml-auto bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full">
+                {uploadedCertificateCount}
+              </span>
+            )}
+          </button>
         </aside>
 
         {/* Mobile tab bar */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/90 backdrop-blur-xl border-t border-primary/10 flex">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/90 backdrop-blur-xl border-t border-primary/10 grid grid-cols-3">
           <button
             className={`flex-1 flex flex-col items-center py-3 gap-1 font-label-caps text-label-caps transition-colors ${activeTab === "consultations" ? "text-primary" : "text-on-surface-variant"}`}
             onClick={() => { setActiveTab("consultations"); setSelectedItem(null); }}
@@ -263,6 +350,19 @@ export default function Admin() {
               </span>
             )}
           </button>
+          <button
+            className={`flex-1 flex flex-col items-center py-3 gap-1 font-label-caps text-label-caps transition-colors relative ${activeTab === "certificates" ? "text-primary" : "text-on-surface-variant"}`}
+            onClick={() => { setActiveTab("certificates"); setSelectedItem(null); }}
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[20px]">workspace_premium</span>
+            Certs
+            {uploadedCertificateCount > 0 && (
+              <span className="absolute top-2 right-1/4 bg-primary text-on-primary text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                {uploadedCertificateCount}
+              </span>
+            )}
+          </button>
         </div>
 
         {/* Main content */}
@@ -277,7 +377,7 @@ export default function Admin() {
           )}
 
           {/* Fetch error */}
-          {!loading && fetchError && (
+          {!loading && fetchError && activeTab !== "certificates" && (
             <div className="mb-8 flex items-start gap-3 bg-error/10 border border-error/30 rounded-xl p-5">
               <span className="material-symbols-outlined text-error flex-shrink-0">error</span>
               <div>
@@ -295,7 +395,7 @@ export default function Admin() {
             </div>
           )}
 
-          {!loading && !fetchError && (
+          {!loading && (!fetchError || activeTab === "certificates") && (
             <>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
             <StatCard icon="calendar_month" label="Total Consultations" value={consultations.length} />
@@ -325,7 +425,7 @@ export default function Admin() {
                         selectedItem?.id === c.id ? "border-primary/50 bg-surface-container-low/70" : "border-primary/10"
                       }`}
                       key={c.id}
-                      onClick={() => setSelectedItem(c)}
+                      onClick={() => setSelectedItem({ ...c, type: "consultation" })}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
@@ -364,6 +464,7 @@ export default function Admin() {
                         { label: "Full Name", value: `${selectedItem.firstName} ${selectedItem.lastName}` },
                         { label: "Email", value: selectedItem.email },
                         { label: "Phone", value: selectedItem.phone || "—" },
+                        { label: "Modality", value: selectedItem.modality || "—" },
                         { label: "Consultation Type", value: selectedItem.consultType },
                         { label: "Timeframe", value: selectedItem.timeframe },
                         { label: "Message", value: selectedItem.message },
@@ -420,7 +521,7 @@ export default function Admin() {
                           : "border-secondary/20 bg-secondary/5"
                       }`}
                       key={m.id}
-                      onClick={() => handleOpenMessage(m)}
+                      onClick={() => handleOpenMessage({ ...m, type: "contact" })}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
@@ -495,6 +596,93 @@ export default function Admin() {
                     <p className="font-body-md text-body-md text-on-surface-variant">Select a message to read it.</p>
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Certificates Tab */}
+          {activeTab === "certificates" && (
+            <div className="space-y-8">
+              <div className="bg-surface-container-low/40 backdrop-blur-xl border border-primary/10 rounded-2xl p-6 md:p-8">
+                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+                  <div>
+                    <h2 className="font-headline-lg text-headline-lg text-on-surface mb-3">Certificate Uploads</h2>
+                    <p className="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+                      Upload certificate images to Cloudinary here. They will appear automatically in the About page certificate slots and in the Gallery page.
+                    </p>
+                  </div>
+                  <Badge color="primary">{uploadedCertificateCount} of {certificateSlots.length} uploaded</Badge>
+                </div>
+
+                {(certificateStatus || certificateError) && (
+                  <div className={`mt-6 rounded-xl border p-4 font-mono-technical text-mono-technical ${
+                    certificateError
+                      ? "border-error/30 bg-error/10 text-error"
+                      : "border-primary/20 bg-primary/10 text-primary"
+                  }`}>
+                    {certificateError || certificateStatus}
+                  </div>
+                )}
+
+                <div className="mt-6 rounded-xl border border-primary/10 bg-surface-container-low/60 p-4 font-mono-technical text-mono-technical text-on-surface-variant">
+                  Cloudinary uploads use a server-side signature, so the API secret stays out of the browser bundle.
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 md:gap-6">
+                {mergedCertificateSlots.map((slot, index) => (
+                  <article
+                    className="bg-surface-container-low/50 backdrop-blur-xl border border-primary/10 rounded-2xl overflow-hidden min-w-0"
+                    key={slot.slot}
+                  >
+                    <div className="min-h-[220px] sm:aspect-[4/3] bg-surface-container-lowest/60 flex items-center justify-center overflow-hidden">
+                      {slot.image ? (
+                        <img alt={slot.title} className="w-full h-full object-cover" src={slot.image} />
+                      ) : (
+                        <div className="text-center p-8">
+                          <span className="material-symbols-outlined text-primary text-5xl mb-4 block">add_photo_alternate</span>
+                          <p className="font-mono-technical text-mono-technical text-on-surface-variant">No image uploaded</p>
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-5 space-y-4">
+                      <div>
+                        <p className="font-label-caps text-label-caps text-primary tracking-widest uppercase">{slot.slot}</p>
+                        <h3 className="font-body-lg text-body-lg text-on-surface mt-1 break-words">{slot.title}</h3>
+                        <p className="font-mono-technical text-mono-technical text-on-surface-variant mt-1">{slot.issuer}</p>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <input
+                          accept="image/*"
+                          className="sr-only"
+                          id={`certificate-upload-${index}`}
+                          onChange={(event) => {
+                            handleCertificateUpload(slot, event.target.files?.[0]);
+                            event.target.value = "";
+                          }}
+                          type="file"
+                        />
+                        <label
+                          className="flex-1 cursor-pointer inline-flex items-center justify-center gap-2 bg-primary text-on-primary font-label-caps text-label-caps px-4 py-3 rounded-full hover:bg-primary-fixed transition-colors"
+                          htmlFor={`certificate-upload-${index}`}
+                        >
+                          <span className="material-symbols-outlined text-[18px]">upload_file</span>
+                          {slot.image ? "Replace" : "Upload"}
+                        </label>
+                        {slot.image && (
+                          <button
+                            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 border border-error/30 text-error font-label-caps text-label-caps px-4 py-3 rounded-full hover:bg-error/10 transition-colors"
+                            onClick={() => handleCertificateRemove(slot)}
+                            type="button"
+                          >
+                            <span className="material-symbols-outlined text-[18px]">delete</span>
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </article>
+                ))}
               </div>
             </div>
           )}

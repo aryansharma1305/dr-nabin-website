@@ -8,19 +8,14 @@ import Navbar from "../components/Navbar.jsx";
 import FloatingSocial from "../components/FloatingSocial.jsx";
 import CustomCursor from "../components/CustomCursor.jsx";
 import Footer from "../components/Footer.jsx";
-import { services, profile } from "./pageContent.js";
+import { services, profile, profileStats } from "./pageContent.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const credentials = ["MBBS", "MD", "DMRD", "Fellowship Oncology", "ABR Certified"];
 const phrases = ["Radiologist", "Oncology Fellow", "Stereotactic Radiosurgery Specialist", "Gold Medalist", "Medical Educator"];
 const tickerText = "Radiologist • Medical Educator • Gold Medalist • Oncology Fellow • Stereotactic Specialist •";
-const stats = [
-  { target: 15, label: "Years Experience" },
-  { target: 10000, label: "Scans Analyzed" },
-  { target: 50, label: "Publications" },
-  { target: 3, label: "Gold Medals" },
-];
+const stats = profileStats;
 
 const featuredServices = services.slice(0, 6);
 
@@ -102,7 +97,8 @@ export default function Home() {
               ease: "power2.out",
               onUpdate() {
                 const value = Math.round(this.targets()[0].innerHTML);
-                counter.innerHTML = target > 1000 ? `${value.toLocaleString()}+` : `${value}${target > 10 ? "+" : ""}`;
+                const suffix = counter.getAttribute("data-suffix") || "";
+                counter.innerHTML = target >= 1000 ? `${value.toLocaleString()}${suffix}` : `${value}${suffix}`;
               },
             });
           },
@@ -214,7 +210,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent z-10"></div>
                 <img
                   alt="Dr. Yadav"
-                  className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-out mix-blend-luminosity"
+                  className="w-full h-full object-contain object-top grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-out mix-blend-luminosity bg-surface-container-low"
                   src={drNabinPhoto}
                 />
                 <div className="absolute bottom-6 left-6 right-6 z-20 glass-panel rounded-xl p-4 flex items-center gap-4 backdrop-blur-md">
@@ -236,7 +232,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-16 border-y border-primary/10 bg-surface-container-low/30 backdrop-blur-sm rounded-3xl">
             {stats.map((stat) => (
               <div className="text-center space-y-2" key={stat.label}>
-                <div className="font-display-sm text-display-sm text-primary counter" data-target={stat.target}>
+                <div className="font-display-sm text-display-sm text-primary counter" data-suffix={stat.suffix} data-target={stat.target}>
                   0
                 </div>
                 <div className="font-label-caps text-label-caps text-on-surface-variant">{stat.label}</div>
@@ -254,7 +250,7 @@ export default function Home() {
             <div className="w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden border border-primary/20 relative z-10 bg-surface-container mx-auto">
               <img
                 alt="Dr. Nabin Kumar Yadav"
-                className="w-full h-full object-cover mix-blend-luminosity opacity-80 hover:opacity-100 hover:mix-blend-normal transition-all duration-700"
+                className="w-full h-full object-contain object-top mix-blend-luminosity opacity-90 hover:opacity-100 hover:mix-blend-normal transition-all duration-700 bg-surface-container-low"
                 src={drNabinPhoto}
               />
             </div>

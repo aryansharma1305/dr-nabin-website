@@ -1,9 +1,11 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import FloatingSocial from "../components/FloatingSocial.jsx";
 import Footer from "../components/Footer.jsx";
 import CustomCursor from "../components/CustomCursor.jsx";
-import { profile, educationHighlights } from "./pageContent.js";
+import { profile, educationHighlights, awards, certificateSlots } from "./pageContent.js";
+import { getCertificates, mergeCertificateSlots } from "../api/certificates.js";
 import { useReveal } from "./useReveal.js";
 import drNabinPhoto from "../assets/dr-nabin.jpeg";
 
@@ -74,6 +76,24 @@ const bioBlocks = [
 
 export default function About() {
   useReveal();
+  const [storedCertificates, setStoredCertificates] = useState({});
+
+  useEffect(() => {
+    let isMounted = true;
+    getCertificates()
+      .then((certificates) => {
+        if (isMounted) setStoredCertificates(certificates);
+      })
+      .catch(() => {
+        if (isMounted) setStoredCertificates({});
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const visibleCertificateSlots = mergeCertificateSlots(certificateSlots, storedCertificates).slice(0, 6);
 
   return (
     <div className="bg-background text-on-background antialiased selection:bg-primary selection:text-on-primary overflow-x-hidden">
@@ -282,6 +302,62 @@ export default function About() {
             <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl mx-auto">
               Honored by Central Christian University for outstanding contributions to radiology and medical education. A testament to a standard of care that accepts no compromises.
             </p>
+          </div>
+        </section>
+
+        {/* ── Awards & Achievements ── */}
+        <section className="px-margin-mobile md:px-margin-desktop py-section-gap bg-surface-container-low/20 border-y border-primary/10 relative">
+          <div className="text-center mb-16 reveal">
+            <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase block mb-4">Recognition</span>
+            <h2 className="font-display-sm text-display-sm text-on-surface">Awards & Achievements</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter max-w-6xl mx-auto mb-16">
+            {awards.map((award, index) => (
+              <div
+                className="reveal bg-surface-container-low/50 backdrop-blur-xl border border-primary/20 rounded-2xl p-6 hover:border-primary/60 hover:-translate-y-2 transition-all duration-300"
+                key={award.title}
+                style={{ transitionDelay: `${index * 50}ms` }}
+              >
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-5">
+                  <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+                    {award.icon}
+                  </span>
+                </div>
+                <h3 className="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">{award.title}</h3>
+                <p className="font-mono-technical text-mono-technical text-primary">{award.issuer}</p>
+                <p className="font-body-md text-body-md text-on-surface-variant mt-2">{award.year}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="max-w-6xl mx-auto">
+            {/* Only show certificate gallery when images have actually been uploaded */}
+            {visibleCertificateSlots.filter((s) => s.image).length > 0 && (
+              <>
+                <div className="mb-8 reveal">
+                  <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase">Certificates & Credentials</span>
+                  <div className="mt-2 h-px bg-primary/10"></div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-gutter">
+                  {visibleCertificateSlots.filter((s) => s.image).map((slot, index) => (
+                    <div
+                      className="reveal min-h-[220px] sm:aspect-[4/3] rounded-2xl border border-primary/20 bg-surface-container-low/40 backdrop-blur-xl overflow-hidden hover:border-primary/60 transition-all duration-300 min-w-0"
+                      key={slot.slot}
+                      style={{ transitionDelay: `${index * 50}ms` }}
+                    >
+                      <div className="relative w-full h-full min-h-[220px]">
+                        <img alt={slot.title} className="w-full h-full object-cover" src={slot.image} />
+                        <div className="absolute inset-x-0 bottom-0 bg-background/85 backdrop-blur-md p-4 text-left">
+                          <p className="font-label-caps text-label-caps text-on-surface break-words">{slot.title}</p>
+                          <p className="font-mono-technical text-mono-technical text-on-surface-variant mt-1">{slot.issuer}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </section>
 

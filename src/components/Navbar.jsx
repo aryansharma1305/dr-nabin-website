@@ -38,13 +38,10 @@ export default function Navbar() {
     <>
       {/* Desktop Nav */}
       <nav
-        className={`hidden md:flex justify-between items-center px-margin-desktop py-6 w-full z-50 fixed top-0 bg-transparent border-b border-transparent shadow-none transition-all duration-400 ${isScrolled ? "nav-scrolled" : ""}`}
+        className={`hidden md:flex justify-center items-center px-margin-desktop py-6 w-full z-50 fixed top-0 bg-transparent border-b border-transparent shadow-none transition-all duration-400 ${isScrolled ? "nav-scrolled" : ""}`}
         id="main-nav"
       >
-        <Link className="font-headline-lg text-headline-lg text-primary tracking-tighter" to="/">
-          Dr. Nabin Kumar Yadav
-        </Link>
-        <ul className="flex gap-8 items-center">
+        <ul className="flex gap-8 items-center mr-auto">
           {navItems.map((item) => (
             <li key={item.to}>
               <Link

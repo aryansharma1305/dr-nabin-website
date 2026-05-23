@@ -14,15 +14,15 @@ export default async function handler(req, res) {
 
     // ── POST /api/consultations — submit a new consultation request ──
     if (req.method === "POST") {
-      const { firstName, lastName, email, phone, consultType, timeframe, message } = req.body;
+      const { firstName, lastName, email, phone, modality, consultType, timeframe, message } = req.body;
 
       if (!firstName || !lastName || !email || !consultType) {
         return res.status(400).json({ ok: false, error: "Missing required fields." });
       }
 
       const [row] = await sql`
-        INSERT INTO consultations (first_name, last_name, email, phone, consult_type, timeframe, message)
-        VALUES (${firstName}, ${lastName}, ${email}, ${phone || null}, ${consultType}, ${timeframe || null}, ${message || null})
+        INSERT INTO consultations (first_name, last_name, email, phone, modality, consult_type, timeframe, message)
+        VALUES (${firstName}, ${lastName}, ${email}, ${phone || null}, ${modality || null}, ${consultType}, ${timeframe || null}, ${message || null})
         RETURNING *
       `;
 

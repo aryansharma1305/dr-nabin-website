@@ -38,6 +38,7 @@ function normalise(row) {
     lastName: row.last_name,
     email: row.email,
     phone: row.phone,
+    modality: row.modality,
     consultType: row.consult_type,
     timeframe: row.timeframe,
     message: row.message,

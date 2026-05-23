@@ -6,7 +6,7 @@ import CustomCursor from "../components/CustomCursor.jsx";
 import { profile, services, educationHighlights } from "./pageContent.js";
 import { useReveal } from "./useReveal.js";
 
-const diagnosticTags = ["X-Ray", "CT", "MRI", "Ultrasound", "Mammography", "Emergency", "Teleradiology", "Radiosurgery"];
+const diagnosticTags = ["USG", "XRAY", "CT", "MRI", "Mammography", "Emergency", "Teleradiology", "Radiosurgery"];
 
 export default function Services() {
   useReveal();
