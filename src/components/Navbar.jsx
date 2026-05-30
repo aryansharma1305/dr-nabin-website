@@ -68,31 +68,29 @@ export default function Navbar() {
         </Link>
       </nav>
 
-      {/* Mobile Side Nav */}
-      <nav className="md:hidden flex flex-col gap-6 py-8 px-2 z-40 fixed left-4 top-1/2 -translate-y-1/2 rounded-full bg-surface-container-low/60 backdrop-blur-xl border border-primary/10 shadow-2xl">
-        <div className="flex flex-col items-center gap-5">
-          {mobileItems.map((item) => (
-            <Link
-              className={`rounded-full p-3 hover:scale-110 transition-transform duration-300 ${
-                location.pathname === item.to
-                  ? "bg-primary text-on-primary"
-                  : "text-on-surface-variant hover:bg-surface-variant"
-              }`}
-              key={item.to}
-              title={item.title}
-              to={item.to}
-            >
-              <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
-            </Link>
-          ))}
+      {/* Mobile Bottom Nav */}
+      <nav className="md:hidden flex flex-row justify-between items-center py-3 px-6 z-50 fixed bottom-16 left-4 right-4 rounded-full bg-surface-container-high/95 backdrop-blur-2xl border border-primary/20 shadow-2xl">
+        {mobileItems.map((item) => (
           <Link
-            className="rounded-full p-3 hover:scale-110 transition-transform duration-300 text-on-surface-variant hover:bg-surface-variant"
-            title="Book Consultation"
-            to="/book-consultation"
+            className={`rounded-full p-2 hover:scale-110 transition-transform duration-300 ${
+              location.pathname === item.to
+                ? "bg-primary text-on-primary"
+                : "text-on-surface-variant hover:bg-surface-variant"
+            }`}
+            key={item.to}
+            title={item.title}
+            to={item.to}
           >
-            <span className="material-symbols-outlined text-[20px] text-primary">calendar_add_on</span>
+            <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
           </Link>
-        </div>
+        ))}
+        <Link
+          className="rounded-full p-2 hover:scale-110 transition-transform duration-300 text-on-surface-variant hover:bg-surface-variant"
+          title="Book Consultation"
+          to="/book-consultation"
+        >
+          <span className="material-symbols-outlined text-[24px] text-primary">calendar_add_on</span>
+        </Link>
       </nav>
     </>
   );

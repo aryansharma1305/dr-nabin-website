@@ -150,7 +150,7 @@ export default function Home() {
             <div className="md:col-span-8 flex flex-col gap-8 md:pr-12">
               <div className="space-y-4">
                 <h1
-                  className="font-display-lg text-display-lg md:text-[140px] text-on-surface italic font-light tracking-tight gs-reveal drop-shadow-[0_0_28px_rgba(240,244,255,0.18)]"
+                  className="font-display-lg text-[60px] sm:text-[96px] md:text-[140px] text-on-surface italic font-light tracking-tight gs-reveal drop-shadow-[0_0_28px_rgba(240,244,255,0.18)]"
                   style={{ lineHeight: 1.1 }}
                 >
                   {"Precision.".split(" ").map((word, index) => (
