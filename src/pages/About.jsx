@@ -103,10 +103,10 @@ export default function About() {
       <FloatingSocial />
       <Navbar />
 
-      <main className="pt-24 md:pt-0 md:pl-32">
+      <main className="pt-4 md:pt-0 md:pl-32">
 
         {/* ── Hero ── */}
-        <section className="flex flex-col md:flex-row items-stretch px-margin-mobile md:px-margin-desktop gap-12 pt-16 md:pt-24 pb-section-gap relative overflow-hidden">
+        <section className="flex flex-col md:flex-row items-stretch px-margin-mobile md:px-margin-desktop gap-12 pt-4 md:pt-24 pb-section-gap relative overflow-hidden">
           <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[150px] -z-10 pointer-events-none"></div>
 
           {/* ── Portrait card — tall rectangle, full face visible ── */}
