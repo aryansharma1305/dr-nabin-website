@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import drNabinPhoto from "../assets/dr-nabin.jpeg";
+import heroPhoto from "../assets/dr-nabin.jpeg";
+import drNabinPhoto from "../assets/dr-nabin2.jpeg";
 import goldMedalistPhoto from "../assets/dr-nabin3.jpeg";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -222,7 +223,7 @@ export default function Home() {
                 <img
                   alt="Dr. Yadav"
                     className="w-full h-full object-cover object-[center_18%] saturate-[1.08] contrast-[1.03] transition-transform duration-700 ease-out group-hover:scale-[1.025]"
-                  src={drNabinPhoto}
+                  src={heroPhoto}
                 />
                 <div className="absolute bottom-6 left-6 right-6 z-20 glass-panel rounded-xl p-4 flex items-center gap-4 backdrop-blur-md">
                   <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
