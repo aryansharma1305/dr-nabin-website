@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import drNabinPhoto from "../assets/dr-nabin2.jpeg";
+import drNabinPhoto from "../assets/dr-nabin.jpeg";
 import goldMedalistPhoto from "../assets/dr-nabin3.jpeg";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
