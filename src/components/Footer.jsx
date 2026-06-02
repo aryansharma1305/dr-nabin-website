@@ -57,6 +57,24 @@ const socialLinks = [
       </svg>
     ),
   },
+  {
+    label: "Academia",
+    href: academicLinks.academia,
+    icon: (
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+        <path d="M12 3 1.8 8.2 12 13.4l10.2-5.2L12 3zm-6.6 8.4v4.7c0 1.7 3 3.4 6.6 3.4s6.6-1.7 6.6-3.4v-4.7L12 14.8l-6.6-3.4z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Google Scholar",
+    href: academicLinks.googleScholar,
+    icon: (
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+        <path d="M12 2 2 9.1l10 7.1 10-7.1L12 2zm0 16.3L5.4 13.7 4 14.7 12 20l8-5.3-1.4-1-6.6 4.6z" />
+      </svg>
+    ),
+  },
 ];
 
 export default function Footer() {
@@ -160,6 +178,22 @@ export default function Footer() {
               target="_blank"
             >
               ResearchGate
+            </a>
+            <a
+              className="text-on-surface-variant font-mono-technical text-mono-technical hover:text-primary transition-all text-xs inline-flex items-center gap-1.5"
+              href={academicLinks.academia}
+              rel="noreferrer"
+              target="_blank"
+            >
+              Academia
+            </a>
+            <a
+              className="text-on-surface-variant font-mono-technical text-mono-technical hover:text-primary transition-all text-xs inline-flex items-center gap-1.5"
+              href={academicLinks.googleScholar}
+              rel="noreferrer"
+              target="_blank"
+            >
+              Google Scholar
             </a>
           </div>
         </div>

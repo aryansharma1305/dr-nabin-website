@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import drNabinPhoto from "../assets/dr-nabin.jpeg";
+import drNabinPhoto from "../assets/dr-nabin2.jpeg";
+import goldMedalistPhoto from "../assets/dr-nabin3.jpeg";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import gsap from "gsap";
@@ -12,7 +13,7 @@ import { services, profile, profileStats } from "./pageContent.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const credentials = ["MBBS", "MD", "DMRD", "Fellowship Oncology", "ABR Certified"];
+const credentials = ["MBBS", "DMRD", "Oncology Fellow", "Stereotactic Radiosurgery"];
 const phrases = ["Radiologist", "Oncology Fellow", "Stereotactic Radiosurgery Specialist", "Gold Medalist", "Medical Educator"];
 const tickerText = "Radiologist • Medical Educator • Gold Medalist • Oncology Fellow • Stereotactic Specialist •";
 const stats = profileStats;
@@ -215,12 +216,12 @@ export default function Home() {
                 <div className="absolute -inset-4 rounded-[28px] bg-gradient-to-br from-primary/25 via-secondary/10 to-transparent blur-2xl opacity-70 pointer-events-none"></div>
                 <div className="absolute -top-4 -right-4 w-24 h-24 border-t border-r border-primary/50 rounded-tr-2xl pointer-events-none"></div>
                 <div className="absolute -bottom-4 -left-4 w-24 h-24 border-b border-l border-primary/40 rounded-bl-2xl pointer-events-none"></div>
-                <div className="w-full aspect-[4/5] glass-panel rounded-2xl overflow-hidden relative group float-animation border-filament bg-surface-container-low">
+                <div className="w-full aspect-[3/4] glass-panel rounded-2xl overflow-hidden relative group float-animation border-filament bg-surface-container-low">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_12%,rgba(212,168,67,0.16),transparent_38%)] z-10 pointer-events-none"></div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/10 to-transparent z-10 pointer-events-none"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-surface/80 via-transparent to-transparent z-10 pointer-events-none"></div>
                 <img
                   alt="Dr. Yadav"
-                    className="w-full h-full object-cover object-[center_top] saturate-[1.08] contrast-[1.03] transition-transform duration-700 ease-out group-hover:scale-[1.025]"
+                    className="w-full h-full object-cover object-[center_18%] saturate-[1.08] contrast-[1.03] transition-transform duration-700 ease-out group-hover:scale-[1.025]"
                   src={drNabinPhoto}
                 />
                 <div className="absolute bottom-6 left-6 right-6 z-20 glass-panel rounded-xl p-4 flex items-center gap-4 backdrop-blur-md">
@@ -364,25 +365,39 @@ export default function Home() {
 
       {/* ── Gold Medal Spotlight ── */}
       <section className="relative z-10 max-w-[1440px] mx-auto px-margin-mobile xl:px-32 py-section-gap gs-reveal">
-        <div className="relative overflow-hidden shine-sweep bg-surface-container-high/80 backdrop-blur-2xl border border-primary/50 p-12 md:p-20 rounded-2xl text-center group">
+        <div className="relative overflow-hidden shine-sweep bg-surface-container-high/80 backdrop-blur-2xl border border-primary/50 p-6 md:p-10 lg:p-14 rounded-2xl group">
           <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-40 transition-opacity duration-500">
             <span className="material-symbols-outlined text-primary" style={{ fontSize: "120px", fontVariationSettings: "'FILL' 1" }}>
               workspace_premium
             </span>
           </div>
           <div className="absolute inset-0 bg-primary/5 blur-[100px] -z-10 rounded-full w-1/2 h-1/2 m-auto pointer-events-none"></div>
-          <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase mb-4 block">Pinnacle of Achievement</span>
-          <h2 className="font-display-sm text-display-sm text-on-surface mb-6">Gold Medalist</h2>
-          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-10">
-            Honored by Central Christian University for outstanding contributions to radiology and medical education. A testament to a standard of care that accepts no compromises.
-          </p>
-          <Link
-            className="inline-flex items-center gap-2 text-primary font-label-caps text-label-caps border border-primary/40 px-8 py-3 rounded-full hover:bg-primary/10 transition-all duration-300"
-            to="/about"
-          >
-            Learn More
-            <span className="material-symbols-outlined text-sm">arrow_forward</span>
-          </Link>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="lg:col-span-5">
+              <div className="relative overflow-hidden rounded-2xl border border-primary/30 bg-surface-container-low shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+                <img
+                  alt="Dr. Nabin Kumar Yadav receiving Gold Medalist recognition"
+                  className="w-full aspect-[4/3] object-cover object-center saturate-[1.08] contrast-[1.03]"
+                  src={goldMedalistPhoto}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/25 via-transparent to-transparent pointer-events-none"></div>
+              </div>
+            </div>
+            <div className="lg:col-span-7 text-center lg:text-left">
+              <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase mb-4 block">Pinnacle of Achievement</span>
+              <h2 className="font-display-sm text-display-sm text-on-surface mb-6">Gold Medalist</h2>
+              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto lg:mx-0 mb-10">
+                Honored by Central Christian University for outstanding contributions to radiology and medical education. A testament to a standard of care that accepts no compromises.
+              </p>
+              <Link
+                className="inline-flex items-center gap-2 text-primary font-label-caps text-label-caps border border-primary/40 px-8 py-3 rounded-full hover:bg-primary/10 transition-all duration-300"
+                to="/about"
+              >
+                Learn More
+                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

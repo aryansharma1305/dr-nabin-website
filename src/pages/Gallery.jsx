@@ -5,7 +5,7 @@ import FloatingSocial from "../components/FloatingSocial.jsx";
 import CustomCursor from "../components/CustomCursor.jsx";
 import { awards } from "./pageContent.js";
 import { getGalleryItems } from "../api/gallery-items.js";
-import drNabinPhoto from "../assets/dr-nabin.jpeg";
+import drNabinPhoto from "../assets/dr-nabin2.jpeg";
 import book1 from "../assets/book-1.jpeg";
 import book2 from "../assets/book-2.jpeg";
 import book3 from "../assets/book-3.jpeg";

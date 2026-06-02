@@ -20,6 +20,8 @@ export const profileStats = [
 
 export const academicLinks = {
   researchGate: "https://www.researchgate.net/profile/Nabin-Yadav-8",
+  academia: "https://independent.academia.edu/DrNabinKumarYadav",
+  googleScholar: "https://scholar.google.com/citations?hl=en&authuser=4&user=GS6AEJIAAAAJ",
 };
 
 export const bioParagraphs = [

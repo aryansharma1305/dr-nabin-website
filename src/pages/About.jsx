@@ -7,7 +7,7 @@ import CustomCursor from "../components/CustomCursor.jsx";
 import { profile, educationHighlights, awards } from "./pageContent.js";
 import { getGalleryItems } from "../api/gallery-items.js";
 import { useReveal } from "./useReveal.js";
-import drNabinPhoto from "../assets/dr-nabin.jpeg";
+import drNabinPhoto from "../assets/dr-nabin2.jpeg";
 
 const timeline = [
   {
